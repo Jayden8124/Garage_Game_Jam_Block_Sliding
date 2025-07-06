@@ -1,2 +1,2 @@
-﻿using var game = new Block_Sliding.Game1();
+﻿using var game = new Block_Sliding.MainScene();
 game.Run();
