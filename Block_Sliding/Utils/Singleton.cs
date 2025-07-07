@@ -13,10 +13,9 @@ namespace Block_Sliding
         public const int SCREENHEIGHT = 720;
 
         // Rectacngle Size
-        public int GAMEWIDTH = 9;
-        public int GAMEHEIGHT = 10;
-        public Texture2D _rect;
-        public int _TILESIZE = 60;
+        public const int _TILESIZE = 60;
+        public const int GAMEWIDTH = 9;
+        public const int GAMEHEIGHT = 10;
 
         // Utility variables
         public int Score;

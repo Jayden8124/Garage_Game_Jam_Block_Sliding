@@ -16,6 +16,8 @@ public class MainScene : Game
     // Point _selectedTile;
     List<Point> _possibleClicked;
 
+    // Drawing
+    private Drawing _drawing;
 
     public MainScene()
     {
@@ -39,12 +41,12 @@ public class MainScene : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        // TODO: use this.Content to load your game content here
-        Singleton.Instance._rect = new Texture2D(_graphics.GraphicsDevice, Singleton.Instance._TILESIZE, Singleton.Instance._TILESIZE);
+        // // TODO: use this.Content to load your game content here
+        // Singleton.Instance._rect = new Texture2D(_graphics.GraphicsDevice, Singleton.Instance._TILESIZE, Singleton.Instance._TILESIZE);
 
-        Color[] data = new Color[Singleton.Instance._TILESIZE * Singleton.Instance._TILESIZE];
-        for (int i = 0; i < data.Length; ++i) data[i] = Color.White;
-        Singleton.Instance._rect.SetData(data);
+        // Color[] data = new Color[Singleton.Instance._TILESIZE * Singleton.Instance._TILESIZE];
+        // for (int i = 0; i < data.Length; ++i) data[i] = Color.White;
+        // Singleton.Instance._rect.SetData(data);
 
         _possibleClicked = new List<Point>();
 
@@ -61,10 +63,14 @@ public class MainScene : Game
         switch (Singleton.Instance.CurrentGameState)
         {
             case Singleton.GameState.GameStart:
-                // if (IsButtonClicked(_drawing.MenuPlay))
-                // {
-                //     Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
-                // }
+                if (IsButtonClicked(_drawing.PlayRect))
+                {
+                    Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
+                }
+                else if (IsButtonClicked(_drawing.ExitRect))
+                {
+                    Exit();
+                }
                 break;
 
             case Singleton.GameState.GamePlaying:
@@ -74,8 +80,10 @@ public class MainScene : Game
                     Singleton.Instance.CurrentGameState = Singleton.GameState.GamePaused;
                 }
 
+                Singleton.Instance.Timer += gameTime.ElapsedGameTime.Ticks; // Timer Count in Seconds
+
                 _possibleClicked.Clear();
-                
+
                 break;
 
             case Singleton.GameState.GameSelection:
@@ -93,8 +101,12 @@ public class MainScene : Game
                 // handle end game
                 if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.Space) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
                 {
-                    Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
+                    Singleton.Instance.CurrentGameState = Singleton.GameState.GameStart;
                     Reset();
+                }
+                else if (IsButtonClicked(_drawing.BackRect))
+                {
+                    Singleton.Instance.CurrentGameState = Singleton.GameState.GameStart;
                 }
                 break;
         }
@@ -106,46 +118,45 @@ public class MainScene : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
+        GraphicsDevice.Clear(Color.White);
 
         switch (Singleton.Instance.CurrentGameState)
         {
             case Singleton.GameState.GameStart:
-
+                {
+                    _drawing._DrawGameStart(_spriteBatch);
+                }
                 break;
-
             case Singleton.GameState.GamePlaying:
-                if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.Escape) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
-                    Singleton.Instance.CurrentGameState = Singleton.GameState.GamePaused;
-
+                {
+                    _drawing._DrawGamePlaying(_spriteBatch);
+                }
                 break;
-
             case Singleton.GameState.GameSelection:
-
+                {
+                    _drawing._DrawGameSelection(_spriteBatch);
+                }
                 break;
-
             case Singleton.GameState.GamePaused:
-                if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.Escape) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
-                    Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
-
-                // if (IsButtonClicked(_drawing.PauseResume))
-                // {
-                //     Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
-                // }
-
+                {
+                    _drawing._DrawGamePaused(_spriteBatch);
+                }
                 break;
-
             case Singleton.GameState.GameOver:
-
+                {
+                    _drawing._DrawGameOver(_spriteBatch);
+                }
                 break;
         }
+
+        _graphics.BeginDraw();
 
         base.Draw(gameTime);
     }
 
     protected void Reset()
     {
-        Singleton.Instance.GameBoard = new int[Singleton.Instance.GAMEHEIGHT, Singleton.Instance.GAMEWIDTH];
+        Singleton.Instance.GameBoard = new int[Singleton.GAMEHEIGHT, Singleton.GAMEWIDTH];
 
         Singleton.Instance.Score = 0;
         // Singleton.Instance.Level = 1;
