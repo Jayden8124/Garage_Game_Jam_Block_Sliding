@@ -22,14 +22,20 @@ namespace Block_Sliding
         public long Timer;
         public Random Random;
         public int[,] GameBoard;
-        
+        public Block[,] BlockMap;
+        public Point _selectedTile;
+        public List<Point> _possibleClicked;
+        public Point _clickedPos;
+        public Texture2D _rect;
 
         // Game state
         public enum GameState
         {
             GameStart,
             GamePlaying,
-            GameSelection,
+            WaitingForSelection,
+            TileSelected,
+            TurnEnded,
             GamePaused,
             GameOver
         }
@@ -38,6 +44,7 @@ namespace Block_Sliding
         // Input State
         public KeyboardState PreviousKey, CurrentKey;
         public MouseState PreviousMouse, CurrentMouse;
+
 
         // Singleton instance
         private static Singleton instance;

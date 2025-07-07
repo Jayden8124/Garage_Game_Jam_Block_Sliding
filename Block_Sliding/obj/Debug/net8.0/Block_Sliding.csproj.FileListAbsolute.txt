@@ -24,3 +24,9 @@
 /Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/obj/Debug/net8.0/Block_Sliding.pdb
 /Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/obj/Debug/net8.0/Block_Sliding.genruntimeconfig.cache
 /Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/obj/Debug/net8.0/ref/Block_Sliding.dll
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/bg.xnb
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/dog1.xnb
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/dog2.xnb
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/dog3.xnb
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/dog4.xnb
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/GameFont.xnb
