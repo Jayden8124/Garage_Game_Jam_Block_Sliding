@@ -4,15 +4,17 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/Content/GameFont.spritefont</File>
-    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/Content/objects/dog1.png</File>
-    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/Content/objects/dog2.png</File>
-    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/Content/objects/dog3.png</File>
-    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/Content/objects/dog4.png</File>
-    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/Content/UI/bg.png</File>
-    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/Content/UI/button.png</File>
-    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/Content/UI/logo.png</File>
-    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/Content/UI/ui.png</File>
+    <File>C:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/GameFont.spritefont</File>
+    <File>C:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog1.png</File>
+    <File>C:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog2.png</File>
+    <File>C:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog3.png</File>
+    <File>C:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog4.png</File>
+    <File>C:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/bg.png</File>
+    <File>C:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/button_up.png</File>
+    <File>C:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/button.png</File>
+    <File>C:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/game_over.png</File>
+    <File>C:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/logo.png</File>
+    <File>C:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/ui.png</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />
@@ -21,7 +23,9 @@
     <File>dog3.png</File>
     <File>dog4.png</File>
     <File>bg.png</File>
+    <File>button_up.png</File>
     <File>button.png</File>
+    <File>game_over.png</File>
     <File>logo.png</File>
     <File>ui.png</File>
   </DestFiles>
