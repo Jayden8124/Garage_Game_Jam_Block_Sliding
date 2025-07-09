@@ -1,8 +1,10 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using System.Collections.Generic;
+using System;
 
-namespace Block_Sliding
+namespace Dog_Sliding
 {
     public class Drawing
     {
@@ -16,12 +18,11 @@ namespace Block_Sliding
         public Texture2D MenuBackgroundText { get; private set; }
         public Texture2D MainBackgroundText { get; private set; }
         public Texture2D IconBackgroundText { get; private set; }
-        public Texture2D PlayText { get; private set; }
-        public Texture2D ExitText { get; private set; }
-        public Texture2D BackText { get; private set; }
+        public Texture2D ButtonText { get; private set; }
+        public Texture2D UIText { get; private set; }
 
         // Textures Object
-        public static Texture2D[] DogTextures { get; private set; } 
+        public static Texture2D[] DogTextures { get; private set; }
 
         // Button Rectangles
         public Rectangle PlayRect { get; private set; }
@@ -33,8 +34,8 @@ namespace Block_Sliding
             GraphicsDevice = graphicsDevice;
 
             // Button Rectangles for Contain Mouse Destination
-            PlayRect = new Rectangle(540, 320, 200, 80);
-            ExitRect = new Rectangle(540, 470, 200, 80);
+            PlayRect = new Rectangle(540, 420, 200, 80);
+            ExitRect = new Rectangle(540, 530, 200, 80);
             BackRect = new Rectangle(/* 540, 470, 200, 80 Change the size of button */);
         }
 
@@ -42,12 +43,12 @@ namespace Block_Sliding
         {
             // Load Textures
             // MenuBackgroundText = Content.Load<Texture2D>("?");
-            // MainBackgroundText = Content.Load<Texture2D>("?");
-            // IconBackgroundText = Content.Load<Texture2D>("?");
-            // PlayText = Content.Load<Texture2D>("?");
-            // ExitText = Content.Load<Texture2D>("?");
-            // BackText = Content.Load<Texture2D>("?");
+            MainBackgroundText = Content.Load<Texture2D>("bg");
+            IconBackgroundText = Content.Load<Texture2D>("logo");
+            ButtonText = Content.Load<Texture2D>("button");
+            UIText = Content.Load<Texture2D>("ui");
 
+            // Dog Object Textures
             DogTextures = new Texture2D[5];
             DogTextures[1] = Content.Load<Texture2D>("Dog1");
             DogTextures[2] = Content.Load<Texture2D>("Dog2");
@@ -57,12 +58,12 @@ namespace Block_Sliding
             // Font
             Font = Content.Load<SpriteFont>("GameFont");
 
-            // {   // Load Content
-                Singleton.Instance._rect = new Texture2D(this.GraphicsDevice, 20, 20);
-                Color[] data = new Color[20 * 20];
-                for (int i = 0; i < data.Length; i++) data[i] = Color.White;
-                Singleton.Instance._rect.SetData(data);
-            // }
+            // Create a Rectangle Textures
+            Singleton.Instance._Rect = new Texture2D(this.GraphicsDevice, Singleton._TILESIZE, Singleton._TILESIZE);
+
+            Color[] data = new Color[Singleton._TILESIZE * Singleton._TILESIZE];
+            for (int i = 0; i < data.Length; i++) data[i] = Color.White;
+            Singleton.Instance._Rect.SetData(data);
         }
 
         public void _DrawGameStart(SpriteBatch _spriteBatch)
@@ -70,57 +71,115 @@ namespace Block_Sliding
             // Layer 1: Background
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            _spriteBatch.Draw(MenuBackgroundText, new Rectangle(0, 0, Singleton.SCREENWIDTH, Singleton.SCREENHEIGHT), Color.White); // Background
+            // _spriteBatch.Draw(MenuBackgroundText, new Rectangle(0, 0, Singleton.SCREENWIDTH, Singleton.SCREENHEIGHT), Color.White); // Background
 
             _spriteBatch.End();
 
             // Layer 2: User Interface
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            _spriteBatch.Draw(IconBackgroundText, new Rectangle(/* คำแหน่งของภาพ Sprite */), Color.White); // Icon Background
-            _spriteBatch.Draw(PlayText, PlayRect, new Rectangle(/* ตำแหน่งของภาพ Sprite */), Color.White); // Play Button
-            _spriteBatch.Draw(ExitText, ExitRect, new Rectangle(/* ตำแหน่งของภาพ Sprite */), Color.White); // Exit Button
+            _spriteBatch.Draw(IconBackgroundText, new Rectangle(317, -36, 730, 487), new Rectangle(0, 0, 1536, 1024), Color.White); // Icon Background
+            _spriteBatch.Draw(ButtonText, PlayRect, new Rectangle(221, 82, 640, 248), Color.White); // Play Button
+            _spriteBatch.Draw(ButtonText, ExitRect, new Rectangle(220, 392, 641, 248), Color.White); // Exit Button
 
             _spriteBatch.End();
         }
 
-        public void _DrawGamePlaying(SpriteBatch _spriteBatch)
+        public void _DrawGamePlaying(SpriteBatch _spriteBatch, List<GameObject> _gameObjects, int _numOjects)
         {
             // Layer 1: Background
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            // _spriteBatch.Draw(MainBackgroundText, new Rectangle(0, 0, Singleton.SCREENWIDTH, Singleton.SCREENHEIGHT), Color.White); // Background
+            _spriteBatch.Draw(MainBackgroundText, new Rectangle(0, 0, Singleton.SCREENWIDTH, Singleton.SCREENHEIGHT), Color.White); // Background
 
             _spriteBatch.End();
 
-            // Layer 2: User Interface
-            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            // DrawGrid(_spriteBatch);
-            _spriteBatch.DrawString(Font, Singleton.Instance.Score.ToString(), new Vector2(/* 1050, 55  Position of Score */), Color.White);
-            _spriteBatch.DrawString(Font, (Singleton.Instance.Timer / 10000000).ToString(), new Vector2(/* 1050, 95 Position of Timer */), Color.White);
+            // Layer 2: User Interface
+            int offsetX = (Singleton.SCREENWIDTH - (Singleton.GAMEWIDTH * Singleton._TILESIZE)) / 2;
+            int offsetY = (Singleton.SCREENHEIGHT - (Singleton.GAMEHEIGHT * Singleton._TILESIZE)) / 2;
+
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Matrix.CreateTranslation(offsetX, offsetY, 0f));
+
+            // Draw Board Tiles
+            for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
+            {
+                for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+                {
+                    // คำนวณขนาดและตำแหน่งของเซลล์
+                    Rectangle rect = new Rectangle(x * Singleton._TILESIZE, y * Singleton._TILESIZE, Singleton._TILESIZE, Singleton._TILESIZE);
+
+                    // เลือกสีตามค่าใน GameBoard
+                    int cell = Singleton.Instance.GameBoard[y, x];
+                    Color fill = (cell == 0) ? Color.CornflowerBlue : Color.Red;
+
+                    // วาดสี่เหลี่ยมทึบ
+                    _spriteBatch.Draw(Singleton.Instance._Rect, rect, fill);
+
+                    // วาดขอบ (ใช้เมธ็อดช่วยวาด outline ที่มีอยู่แล้ว)
+                    DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, rect, Color.Black, 1);
+                }
+            }
+
+            for (int i = 0; i < _numOjects; i++)
+            {
+                _gameObjects[i].Draw(_spriteBatch);
+            }
 
             _spriteBatch.End();
         }
-        
-        public void _DrawWaitingForSelect(SpriteBatch _spriteBatch)
+
+
+        public void _DrawWaitingForSelect(SpriteBatch _spriteBatch, List<GameObject> _gameObjects, int _numOjects)
         {
-             // Layer 1: Background
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            //_spriteBatch.Draw(MainBackgroundText, new Rectangle(0, 0, Singleton.SCREENWIDTH, Singleton.SCREENHEIGHT), Color.White); // Background
+            _spriteBatch.Draw(MainBackgroundText, new Rectangle(0, 0, Singleton.SCREENWIDTH, Singleton.SCREENHEIGHT), Color.White); // Background
 
             _spriteBatch.End();
 
-            // Layer 2: User Interface
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            foreach (Point p in Singleton.Instance._possibleClicked)
+
+            _spriteBatch.Draw(UIText, new Rectangle(70, 60, 200, 80), new Rectangle(81, 149, 910, 340), Color.White); 
+            _spriteBatch.Draw(UIText, new Rectangle(70, 180, 200, 80), new Rectangle(81, 548, 910, 360), Color.White); 
+
+            _spriteBatch.End();
+
+
+            int offsetX = (Singleton.SCREENWIDTH - (Singleton.GAMEWIDTH * Singleton._TILESIZE)) / 2;
+            int offsetY = (Singleton.SCREENHEIGHT - (Singleton.GAMEHEIGHT * Singleton._TILESIZE)) / 2;
+
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Matrix.CreateTranslation(offsetX, offsetY, 0f));
+
+            // Draw Board Tiles
+            for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
             {
-                _spriteBatch.Draw(Singleton.Instance._rect, new Vector2(Singleton._TILESIZE * p.X, Singleton._TILESIZE * p.Y), null, Color.DarkGreen, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+                {
+                    // คำนวณขนาดและตำแหน่งของเซลล์
+                    Rectangle rect = new Rectangle(x * Singleton._TILESIZE, y * Singleton._TILESIZE, Singleton._TILESIZE, Singleton._TILESIZE);
+
+                    // เลือกสีตามค่าใน GameBoard
+                    int cell = Singleton.Instance.GameBoard[y, x];
+                    Color fill = (cell == 0) ? Color.CornflowerBlue : Color.Red;
+
+                    // วาดสี่เหลี่ยมทึบ
+                    _spriteBatch.Draw(Singleton.Instance._Rect, rect, fill);
+
+                    // วาดขอบ (ใช้เมธ็อดช่วยวาด outline ที่มีอยู่แล้ว)
+                    DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, rect, Color.Black, 1);
+                }
             }
 
-            // draw tiles
+            foreach (Point p in Singleton.Instance.PossibleClicked)
+            {
+                _spriteBatch.Draw(Singleton.Instance._Rect, new Vector2(Singleton._TILESIZE * p.X, Singleton._TILESIZE * p.Y), null, Color.DarkGreen * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            }
             
+            for (int i = 0; i < _numOjects; i++)
+            {
+                _gameObjects[i].Draw(_spriteBatch);
+            }
 
             _spriteBatch.End();
         }
@@ -136,15 +195,15 @@ namespace Block_Sliding
             // Layer 2: User Interface
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             // block
-            Block clickedBlock = Singleton.Instance.BlockMap[Singleton.Instance._selectedTile.Y, Singleton.Instance._selectedTile.X];
+            Block clickedBlock = Singleton.Instance.BlockMap[Singleton.Instance.SelectedTile.Y, Singleton.Instance.SelectedTile.X];
             int blockLength = clickedBlock.GetLength();
             // draw selected tile
-            _spriteBatch.Draw(Singleton.Instance._rect, new Vector2(Singleton._TILESIZE * Singleton.Instance._selectedTile.X * blockLength, Singleton._TILESIZE * Singleton.Instance._selectedTile.Y), null, Color.Blue, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            _spriteBatch.Draw(Singleton.Instance._Rect, new Vector2(Singleton._TILESIZE * Singleton.Instance.SelectedTile.X * blockLength, Singleton._TILESIZE * Singleton.Instance.SelectedTile.Y), null, Color.Blue, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 
             //draw possible move
-            foreach (Point v in Singleton.Instance._possibleClicked)
+            foreach (Point v in Singleton.Instance.PossibleClicked)
             {
-                _spriteBatch.Draw(Singleton.Instance._rect, new Vector2(Singleton._TILESIZE * v.X, Singleton._TILESIZE * v.Y), null, Color.LimeGreen, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                _spriteBatch.Draw(Singleton.Instance._Rect, new Vector2(Singleton._TILESIZE * v.X, Singleton._TILESIZE * v.Y), null, Color.LimeGreen, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
 
             // draw tiles
@@ -164,7 +223,7 @@ namespace Block_Sliding
             // Layer 2: User Interface
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            // _spriteBatch.Draw(PlayText, PlayRect, new Rectangle(/* ตำแหน่งของภาพ Sprite */), Color.White); // Resume Button
+            // _spriteBatch.Draw(ButtonText, PlayRect, new Rectangle(/* ตำแหน่งของภาพ Sprite */), Color.White); // Resume Button
             // _spriteBatch.Draw(ExitText, ExitRect, new Rectangle(/* ตำแหน่งของภาพ Sprite */), Color.White); // Exit Button
 
             _spriteBatch.End();
@@ -191,19 +250,6 @@ namespace Block_Sliding
         {
 
         }
-
-        // public void DrawGrid(SpriteBatch _spriteBatch) // รอ Texture มาวาด Grid
-        // {
-        //     for (int row = 0; row < Singleton.GAMEHEIGHT; row++)
-        //     {
-        //         for (int col = 0; col < Singleton.GAMEWIDTH; col++)
-        //         {
-        //             Rectangle _grid = new Rectangle(col * Singleton._TILESIZE, row * Singleton._TILESIZE, Singleton._TILESIZE, Singleton._TILESIZE);
-
-        //             _spriteBatch.Draw(DogTextures[1], _grid, Color.White);
-        //         }
-        //     }
-        // }
 
         public void DrawRectangleWithOutline(SpriteBatch spriteBatch, Texture2D pixel, Rectangle rect, Color outlineColor, int outlineThickness) // Use to draw outline of grid
         {

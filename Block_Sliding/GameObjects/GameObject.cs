@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Block_Sliding
+namespace Dog_Sliding
 {
     public class GameObject : ICloneable
     {

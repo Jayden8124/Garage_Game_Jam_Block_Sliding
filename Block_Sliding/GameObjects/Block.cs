@@ -1,9 +1,7 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Block_Sliding
+namespace Dog_Sliding
 {
     public class Block : GameObject
     {
@@ -25,23 +23,25 @@ namespace Block_Sliding
 
         public override void Update(GameTime gameTime)
         {
-
             base.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            for (int i = 0; i <= 3; i++)
-            {
-                spriteBatch.Draw(_texture, Pieces[i] + Position, null, Color.Lime, 0f, Vector2.Zero, Singleton._TILESIZE - 1, SpriteEffects.None, 0f);
-            }
+            Rectangle dest = new Rectangle((int)Position.X, (int)Position.Y, Singleton._TILESIZE * GetLength(), Singleton._TILESIZE);
+
+            spriteBatch.Draw(_texture, dest, Color.White);
 
             base.Draw(spriteBatch);
         }
 
+
         public override void Reset()
         {
             CurrentBlockType = (BlockType)Singleton.Instance.Random.Next(5);
+
+            for (int i = 0; i < 4; i++)
+                Pieces[i] = Vector2.Zero;
 
             switch (CurrentBlockType)
             {
@@ -68,24 +68,22 @@ namespace Block_Sliding
                     break;
             }
 
-            // int _tileCount = GetLength();
-
-            // if (_tileCount >= 1 && _tileCount <= 4)
-            // {
-            //     _texture = Drawing.DogTextures[_tileCount];
-            // }
-            // else
-            // {
-            //     // กรณี Rock หรืออื่นๆ ถ้าอยากใช้ Texture อื่น ก็เปลี่ยนตรงนี้ได้
-            //     _texture = Drawing.DogTextures[1];
-            // }
-
             Velocity = new Vector2(10f, 1f);
-
             base.Reset();
         }
 
-        
+
+        // int _tileCount = GetLength();
+
+        // if (_tileCount >= 1 && _tileCount <= 4)
+        // {
+        //     _texture = Drawing.DogTextures[_tileCount];
+        // }
+        // else
+        // {
+        //     // กรณี Rock หรืออื่นๆ ถ้าอยากใช้ Texture อื่น ก็เปลี่ยนตรงนี้ได้
+        //     _texture = Drawing.DogTextures[1];
+        // }
 
         public int GetLength()
         {

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Block_Sliding
+namespace Dog_Sliding
 {
     public class Singleton
     {
@@ -12,7 +12,7 @@ namespace Block_Sliding
         public const int SCREENWIDTH = 1280;
         public const int SCREENHEIGHT = 720;
 
-        // Rectacngle Size
+        // Game Size
         public const int _TILESIZE = 60;
         public const int GAMEWIDTH = 9;
         public const int GAMEHEIGHT = 10;
@@ -21,12 +21,14 @@ namespace Block_Sliding
         public int Score;
         public long Timer;
         public Random Random;
-        public int[,] GameBoard;
+    
+        // Game Set Up
+        public int[,] GameBoard; // use for mapping 0 (null) , 1 (block)
         public Block[,] BlockMap;
-        public Point _selectedTile;
-        public List<Point> _possibleClicked;
-        public Point _clickedPos;
-        public Texture2D _rect;
+        public Point SelectedTile;
+        public List<Point> PossibleClicked;
+        public Point ClickedPos;
+        public Texture2D _Rect;
 
         // Game state
         public enum GameState
