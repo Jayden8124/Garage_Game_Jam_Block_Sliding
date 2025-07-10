@@ -76,3 +76,4 @@ C:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/b
 /Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/volume.xnb
 /Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/bg_menu.xnb
 /Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/12.xnb
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/rock.xnb

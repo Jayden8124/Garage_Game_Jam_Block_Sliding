@@ -19,7 +19,7 @@ namespace Dog_Sliding
 
         // Utility variables
         public int Score;
-        public long Timer;
+        public float Timer;
         public Random Random;
     
         // Game Set Up

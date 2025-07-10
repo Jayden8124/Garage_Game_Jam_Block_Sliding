@@ -93,6 +93,7 @@ namespace Dog_Sliding
                 BlockType.Two => 2,
                 BlockType.Three => 3,
                 BlockType.Four => 4,
+                BlockType.Rock => 1,
                 _ => 0
             };
         }

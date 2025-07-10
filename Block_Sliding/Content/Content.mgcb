@@ -68,6 +68,18 @@
 /processorParam:TextureFormat=Color
 /build:objects/dog4.png;dog4.png
 
+#begin UI/rock.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/rock.png;rock.png
+
 #begin UI/bg.png
 /importer:TextureImporter
 /processor:TextureProcessor
