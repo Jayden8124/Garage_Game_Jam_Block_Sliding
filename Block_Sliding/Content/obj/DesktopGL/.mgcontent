@@ -14,7 +14,9 @@
     <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/button.png</File>
     <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/game_over.png</File>
     <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/logo.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/setting.png</File>
     <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/ui.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/volume.png</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />
@@ -27,6 +29,8 @@
     <File>button.png</File>
     <File>game_over.png</File>
     <File>logo.png</File>
+    <File>setting.png</File>
     <File>ui.png</File>
+    <File>volume.png</File>
   </DestFiles>
 </SourceFileCollection>

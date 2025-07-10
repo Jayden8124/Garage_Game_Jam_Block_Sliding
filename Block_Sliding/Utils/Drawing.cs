@@ -22,6 +22,9 @@ namespace Dog_Sliding
         public Texture2D UIText { get; private set; }
         public Texture2D ButtonUp { get; private set; }
         public Texture2D GameOver { get; private set; }
+        public Texture2D Setting { get; private set; }
+        public Texture2D Volume { get; private set; }
+
         // Textures Object
         public static Texture2D[] DogTextures { get; private set; }
 
@@ -30,6 +33,9 @@ namespace Dog_Sliding
         public Rectangle ExitRect { get; private set; }
         public Rectangle BackRect { get; private set; }
         public Rectangle ButtonUpRect { get; private set; }
+        public Rectangle SettingRect { get; private set; }
+        public Rectangle VolumeRect { get; private set; }
+
         public Drawing(GraphicsDevice graphicsDevice)
         {
             GraphicsDevice = graphicsDevice;
@@ -39,18 +45,22 @@ namespace Dog_Sliding
             ExitRect = new Rectangle(540, 530, 200, 80);
             BackRect = new Rectangle(/* 540, 470, 200, 80 Change the size of button */);
             ButtonUpRect = new Rectangle(962, 554, 200, 80);
+            SettingRect = new Rectangle(1171, 60, 60, 60);
+            VolumeRect = new Rectangle(1101, 60, 60, 60);
         }
 
         public void LoadContent(ContentManager Content)
         {
             // Load Textures
-            // MenuBackgroundText = Content.Load<Texture2D>("?");
+            MenuBackgroundText = Content.Load<Texture2D>("bg_menu");
             MainBackgroundText = Content.Load<Texture2D>("bg");
             IconBackgroundText = Content.Load<Texture2D>("logo");
             ButtonText = Content.Load<Texture2D>("button");
             UIText = Content.Load<Texture2D>("ui");
             ButtonUp = Content.Load<Texture2D>("button_up");
             GameOver = Content.Load<Texture2D>("game_over");
+            Setting = Content.Load<Texture2D>("setting");
+            Volume = Content.Load<Texture2D>("volume");
 
             // Dog Object Textures
             DogTextures = new Texture2D[5];
@@ -75,7 +85,7 @@ namespace Dog_Sliding
             // Layer 1: Background
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            // _spriteBatch.Draw(MenuBackgroundText, new Rectangle(0, 0, Singleton.SCREENWIDTH, Singleton.SCREENHEIGHT), Color.White); // Background
+            _spriteBatch.Draw(MenuBackgroundText, new Rectangle(0, 0, Singleton.SCREENWIDTH, Singleton.SCREENHEIGHT), Color.White); // Background
 
             _spriteBatch.End();
 
@@ -99,6 +109,29 @@ namespace Dog_Sliding
             _spriteBatch.End();
 
             // Layer 2: User Interface
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+            _spriteBatch.Draw(UIText, new Rectangle(70, 60, 200, 80), new Rectangle(81, 149, 910, 340), Color.White);
+            _spriteBatch.Draw(UIText, new Rectangle(70, 180, 200, 80), new Rectangle(81, 548, 910, 360), Color.White);
+
+            _spriteBatch.Draw(ButtonUp, ButtonUpRect, new Rectangle(147, 219, 787, 636), Color.White);
+            _spriteBatch.Draw(Setting, SettingRect, new Rectangle(141, 165, 438, 382), Color.White);
+            _spriteBatch.Draw(Volume, VolumeRect, new Rectangle(82, 158, 432, 405), Color.White);
+
+            _spriteBatch.End();
+
+            // Layer 3: Text
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+            _spriteBatch.DrawString(Font, "TIME: " +
+                String.Format("{0}:{1:00}",
+                Singleton.Instance.Timer / 600000000,
+                Singleton.Instance.Timer / 10000000 % 60), new Vector2(240, 60), Color.Black);
+            _spriteBatch.DrawString(Font, Singleton.Instance.Score.ToString(), new Vector2(240, 180), Color.Black);
+
+            _spriteBatch.End();
+
+            // Layer 4: Game Board
             int offsetX = (Singleton.SCREENWIDTH - (Singleton.GAMEWIDTH * Singleton._TILESIZE)) / 2;
             int offsetY = (Singleton.SCREENHEIGHT - (Singleton.GAMEHEIGHT * Singleton._TILESIZE)) / 2;
 
@@ -119,8 +152,8 @@ namespace Dog_Sliding
                     // วาดสี่เหลี่ยมทึบ
                     _spriteBatch.Draw(Singleton.Instance._Rect, rect, fill);
 
-                    // วาดขอบ (ใช้เมธ็อดช่วยวาด outline ที่มีอยู่แล้ว)
-                    DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, rect, Color.Black, 1);
+                   
+    
                 }
             }
 
@@ -129,7 +162,11 @@ namespace Dog_Sliding
                 _gameObjects[i].Draw(_spriteBatch);
             }
 
+            // _spriteBatch.Draw(CoinSheet, new Vector2(1100, 50), new Rectangle(0, 0, 27, 27), Color.White, 0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0); // Coin Score
+
             _spriteBatch.End();
+            
+
         }
 
 
@@ -147,6 +184,9 @@ namespace Dog_Sliding
             _spriteBatch.Draw(UIText, new Rectangle(70, 180, 200, 80), new Rectangle(81, 548, 910, 360), Color.White);
 
             _spriteBatch.Draw(ButtonUp, ButtonUpRect, new Rectangle(147, 219, 787, 636), Color.White);
+            _spriteBatch.Draw(Setting, SettingRect, new Rectangle(141, 165, 438, 382), Color.White);
+            _spriteBatch.Draw(Volume, VolumeRect, new Rectangle(82, 158, 432, 405), Color.White);
+
 
             _spriteBatch.End();
 
@@ -169,9 +209,6 @@ namespace Dog_Sliding
 
                     // วาดสี่เหลี่ยมทึบ
                     _spriteBatch.Draw(Singleton.Instance._Rect, rect, fill);
-
-                    // วาดขอบ (ใช้เมธ็อดช่วยวาด outline ที่มีอยู่แล้ว)
-                    DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, rect, Color.Black, 1);
                 }
             }
 
@@ -184,6 +221,16 @@ namespace Dog_Sliding
             {
                 _gameObjects[i].Draw(_spriteBatch);
             }
+
+            _spriteBatch.End();
+
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+            _spriteBatch.DrawString(Font, "TIME: " +
+                String.Format("{0}:{1:00}",
+                Singleton.Instance.Timer / 600000000,
+                Singleton.Instance.Timer / 10000000 % 60), new Vector2(240, 60), Color.Black);
+            _spriteBatch.DrawString(Font, Singleton.Instance.Score.ToString(), new Vector2(240, 180), Color.Black);
 
             _spriteBatch.End();
         }
@@ -201,6 +248,8 @@ namespace Dog_Sliding
             _spriteBatch.Draw(UIText, new Rectangle(70, 180, 200, 80), new Rectangle(81, 548, 910, 360), Color.White);
 
             _spriteBatch.Draw(ButtonUp, ButtonUpRect, new Rectangle(147, 219, 787, 636), Color.White);
+            _spriteBatch.Draw(Setting, SettingRect, new Rectangle(141, 165, 438, 382), Color.White);
+            _spriteBatch.Draw(Volume, VolumeRect, new Rectangle(82, 158, 432, 405), Color.White);
 
             _spriteBatch.End();
 
@@ -224,8 +273,8 @@ namespace Dog_Sliding
                     // วาดสี่เหลี่ยมทึบ
                     _spriteBatch.Draw(Singleton.Instance._Rect, rect, fill);
 
-                    // วาดขอบ (ใช้เมธ็อดช่วยวาด outline ที่มีอยู่แล้ว)
-                    DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, rect, Color.Black, 1);
+                   
+    
                 }
             }
 
@@ -268,8 +317,84 @@ namespace Dog_Sliding
             }
 
             _spriteBatch.End();
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+            _spriteBatch.DrawString(Font, Singleton.Instance.Score.ToString(), new Vector2(30, 55), Color.Black);
+            _spriteBatch.DrawString(Font, "TIME: " +
+                String.Format("{0}:{1:00}",
+                Singleton.Instance.Timer / 600000000,
+                Singleton.Instance.Timer / 10000000 % 60), new Vector2(30, 200), Color.Black);
+
+            _spriteBatch.End();
         }
 
+        public void _DrawGameTurnEnded(SpriteBatch _spriteBatch, List<GameObject> _gameObjects, int _numOjects)
+        {
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+            _spriteBatch.Draw(MainBackgroundText, new Rectangle(0, 0, Singleton.SCREENWIDTH, Singleton.SCREENHEIGHT), Color.White); // Background
+
+            _spriteBatch.End();
+
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+            _spriteBatch.Draw(UIText, new Rectangle(70, 60, 200, 80), new Rectangle(81, 149, 910, 340), Color.White);
+            _spriteBatch.Draw(UIText, new Rectangle(70, 180, 200, 80), new Rectangle(81, 548, 910, 360), Color.White);
+
+            _spriteBatch.Draw(ButtonUp, ButtonUpRect, new Rectangle(147, 219, 787, 636), Color.White);
+            _spriteBatch.Draw(Setting, SettingRect, new Rectangle(141, 165, 438, 382), Color.White);
+            _spriteBatch.Draw(Volume, VolumeRect, new Rectangle(82, 158, 432, 405), Color.White);
+
+
+            _spriteBatch.End();
+
+
+            int offsetX = (Singleton.SCREENWIDTH - (Singleton.GAMEWIDTH * Singleton._TILESIZE)) / 2;
+            int offsetY = (Singleton.SCREENHEIGHT - (Singleton.GAMEHEIGHT * Singleton._TILESIZE)) / 2;
+
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Matrix.CreateTranslation(offsetX, offsetY, 0f));
+            // Draw Board Tiles
+            for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
+            {
+                for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+                {
+                    // คำนวณขนาดและตำแหน่งของเซลล์
+                    Rectangle rect = new Rectangle(x * Singleton._TILESIZE, y * Singleton._TILESIZE, Singleton._TILESIZE, Singleton._TILESIZE);
+
+                    // เลือกสีตามค่าใน GameBoard
+                    int cell = Singleton.Instance.GameBoard[y, x];
+                    Color fill = (cell == 0) ? Color.CornflowerBlue : Color.Red;
+
+                    // วาดสี่เหลี่ยมทึบ
+                    _spriteBatch.Draw(Singleton.Instance._Rect, rect, fill);
+
+                   
+    
+                }
+            }
+
+            foreach (Point p in Singleton.Instance.PossibleClicked)
+            {
+                _spriteBatch.Draw(Singleton.Instance._Rect, new Vector2(Singleton._TILESIZE * p.X, Singleton._TILESIZE * p.Y), null, Color.DarkGreen * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            }
+
+            for (int i = 0; i < _numOjects; i++)
+            {
+                _gameObjects[i].Draw(_spriteBatch);
+            }
+
+            _spriteBatch.End();
+
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+            _spriteBatch.DrawString(Font, Singleton.Instance.Score.ToString(), new Vector2(30, 55), Color.Black);
+            _spriteBatch.DrawString(Font, "TIME: " +
+                String.Format("{0}:{1:00}",
+                Singleton.Instance.Timer / 600000000,
+                Singleton.Instance.Timer / 10000000 % 60), new Vector2(30, 200), Color.Black);
+
+            _spriteBatch.End();
+        }
         public void _DrawGamePaused(SpriteBatch _spriteBatch)
         {
             // Layer 1: Background

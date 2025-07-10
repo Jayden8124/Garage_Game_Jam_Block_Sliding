@@ -35,9 +35,9 @@ namespace Dog_Sliding
         {
             GameStart,
             GamePlaying,
-            WaitingForSelection,
+            GameWaitingForSelection,
             TileSelected,
-            TurnEnded,
+            GameTurnEnded,
             GamePaused,
             GameOver
         }

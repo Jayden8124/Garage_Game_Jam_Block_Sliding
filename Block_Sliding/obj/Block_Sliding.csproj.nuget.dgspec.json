@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Study-Comsci\\Y4T1\\GameJam\\merge\\Garage_Game_Jam_Block_Sliding\\Block_Sliding\\Block_Sliding.csproj": {}
+    "/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/Block_Sliding.csproj": {}
   },
   "projects": {
-    "C:\\Study-Comsci\\Y4T1\\GameJam\\merge\\Garage_Game_Jam_Block_Sliding\\Block_Sliding\\Block_Sliding.csproj": {
+    "/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/Block_Sliding.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Study-Comsci\\Y4T1\\GameJam\\merge\\Garage_Game_Jam_Block_Sliding\\Block_Sliding\\Block_Sliding.csproj",
+        "projectUniqueName": "/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/Block_Sliding.csproj",
         "projectName": "Block_Sliding",
-        "projectPath": "C:\\Study-Comsci\\Y4T1\\GameJam\\merge\\Garage_Game_Jam_Block_Sliding\\Block_Sliding\\Block_Sliding.csproj",
-        "packagesPath": "C:\\Users\\Petch\\.nuget\\packages\\",
-        "outputPath": "C:\\Study-Comsci\\Y4T1\\GameJam\\merge\\Garage_Game_Jam_Block_Sliding\\Block_Sliding\\obj\\",
+        "projectPath": "/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/Block_Sliding.csproj",
+        "packagesPath": "/Users/jay/.nuget/packages/",
+        "outputPath": "/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Petch\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/Users/jay/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -68,7 +68,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.404/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.404/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -14,7 +14,7 @@ public class MainScene : Game
 
     // GameObjects
     List<GameObject> _gameObjects;
-    public int _numOjects;
+    public int _numObjects;
 
     // Drawing
     private Drawing _drawing;
@@ -59,7 +59,8 @@ public class MainScene : Game
         Singleton.Instance.CurrentKey = Keyboard.GetState();
         Singleton.Instance.CurrentMouse = Mouse.GetState();
 
-        _numOjects = _gameObjects.Count;
+        Singleton.Instance.Timer += gameTime.ElapsedGameTime.Ticks;
+        _numObjects = _gameObjects.Count;
 
         switch (Singleton.Instance.CurrentGameState)
         {
@@ -75,55 +76,45 @@ public class MainScene : Game
                 break;
 
             case Singleton.GameState.GamePlaying:
-                // // handle the pause
+                // Pause
                 if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.Escape) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
                 {
                     Singleton.Instance.CurrentGameState = Singleton.GameState.GamePaused;
                 }
 
-                Singleton.Instance.Timer += gameTime.ElapsedGameTime.Ticks; // Timer Count in Seconds
-
-                // _rowTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                // if (_rowTimer >= 5f)
-                // {
-                //     _rowTimer -= 5f;
-                //     ShiftRowsUp();    // เรียกเมธ็อดใหม่
-                // }
-                
-                ShiftRowsUp();
+                // Check Game Over
                 if (Singleton.Instance.CurrentGameState == Singleton.GameState.GameOver)
                 {
                     Console.WriteLine("[GAME OVER] Game Over due to shift up.");
                     return;
                 }
 
-                // ตรวจสอบแถวเต็มและลบแถวที่เต็ม
-                // CheckAndClearFullRows();
-
-                // ดรอปบล็อกลงก่อนเข้าสู่ WaitingForSelection
-                for (int y = Singleton.GAMEHEIGHT - 2; y >= 0; y--)
+                while (true)
                 {
-                    for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+                    // 1) ไล่สั่งบล็อกทุกตัวให้ drop ลงมา
+                    for (int y = Singleton.GAMEHEIGHT - 2; y >= 0; y--)
                     {
-                        TryDropBlockDown(new Point(x, y));
-                    }
-                }
-
-                Singleton.Instance.PossibleClicked.Clear();
-
-                for (int i = 0; i < Singleton.GAMEWIDTH; i++)
-                {
-                    for (int j = 0; j < Singleton.GAMEHEIGHT - 1; j++) // skip predict
-                    {
-                        if (FindPossibleClickedTiles(new Point(i, j)).Count != 0)
+                        for (int x = 0; x < Singleton.GAMEWIDTH; x++)
                         {
-                            Singleton.Instance.PossibleClicked.Add(new Point(i, j));
+                            TryDropBlockDown(new Point(x, y));
                         }
                     }
+
+                    // 2) เช็กแล้วลบเต็มแถว ถ้าไม่มีแถวไหนถูกลบเลย ก็ออกจากลูป
+                    bool cleared = CheckAndClearFullRows();
+                    if (cleared)
+                    {
+                        ShiftRowsUp(); // Shift rows when turn ends   
+                    }
+                    else
+                    {
+                        // ถ้าไม่มีแถวถูกลบ ก็ออกจากลูป
+                        break;
+                    }
                 }
 
-                // check dead
-                // if(dead) Singleton.Instance.CurrentGameState = Singleton.GameState.GameOver;
+                // Find all possible clicked tiles before change state to WaitingForSelection
+                Singleton.Instance.PossibleClicked.Clear();
                 HashSet<Point> possibleClicked = new HashSet<Point>();
 
                 for (int i = 0; i < Singleton.GAMEWIDTH; i++)
@@ -133,41 +124,32 @@ public class MainScene : Game
                         List<Point> result = FindPossibleClickedTiles(new Point(i, j));
                         foreach (Point pt in result)
                         {
-                            possibleClicked.Add(pt); // ป้องกันซ้ำ
+                            possibleClicked.Add(pt);
                         }
                     }
                 }
                 Singleton.Instance.PossibleClicked = possibleClicked.ToList();
-                // Console.WriteLine("[INIT] GameBoard Initialized");
+
+                // Console.WriteLine("[INIT] BlockMap Initialized");
                 // for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
                 // {
                 //     string line = "";
                 //     for (int x = 0; x < Singleton.GAMEWIDTH; x++)
-                //         line += Singleton.Instance.GameBoard[y, x] + " ";
+                //     {
+                //         if (Singleton.Instance.BlockMap[y, x] != null)
+                //             line += Singleton.Instance.BlockMap[y, x].CurrentBlockType + " ";
+                //         else
+                //             line += "null ";
+                //     }
                 //     Console.WriteLine($"Y={y}: {line}");
                 // }
-                Console.WriteLine("[INIT] BlockMap Initialized");
-                for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
-                {
-                    string line = "";
-                    for (int x = 0; x < Singleton.GAMEWIDTH; x++)
-                    {
-                        if (Singleton.Instance.BlockMap[y, x] != null)
-                            line += Singleton.Instance.BlockMap[y, x].CurrentBlockType + " ";
-                        else
-                            line += "null ";
-                    }
-                    Console.WriteLine($"Y={y}: {line}");
-                }
-                // foreach (var item in Singleton.Instance.PossibleClicked)
-                // {
-                //     Console.WriteLine($"[POSSIBLE] Clickable tile at ({item.X}, {item.Y})");
-                // }
-                Singleton.Instance.CurrentGameState = Singleton.GameState.WaitingForSelection;
+
+                // Change State to WaitingForSelection
+                Singleton.Instance.CurrentGameState = Singleton.GameState.GameWaitingForSelection;
 
                 break;
 
-            case Singleton.GameState.WaitingForSelection:
+            case Singleton.GameState.GameWaitingForSelection:
                 Singleton.Instance.CurrentMouse = Mouse.GetState();
 
                 // Check if the mouse is clicked on a button up
@@ -176,6 +158,17 @@ public class MainScene : Game
                     ShiftRowsUp();
                     Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
                 }
+
+                if (IsButtonClicked(_drawing.SettingRect))
+                {
+                    Reset();
+                }
+
+                if (IsButtonClicked(_drawing.VolumeRect))
+                {
+                    Console.WriteLine("[VOLUME] Volume button clicked.");
+                }
+
 
                 if (Singleton.Instance.CurrentMouse.LeftButton == ButtonState.Pressed &&
                     Singleton.Instance.PreviousMouse.LeftButton == ButtonState.Released)
@@ -188,12 +181,7 @@ public class MainScene : Game
                     {
                         Singleton.Instance.PossibleClicked.Clear();
                         Singleton.Instance.SelectedTile = Singleton.Instance.ClickedPos;
-                        // Console.WriteLine($"[SELECT] Tile selected at ({Singleton.Instance.SelectedTile.X}, {Singleton.Instance.SelectedTile.Y})");
                         Singleton.Instance.PossibleClicked.AddRange(FindAvailableSpaces(Singleton.Instance.SelectedTile));
-                        // foreach (var item in Singleton.Instance.PossibleClicked)
-                        // {
-                        //     Console.WriteLine($"[POSSIBLE] Clickable tile at ({item.X}, {item.Y})");
-                        // }
                         Singleton.Instance.PreviousMouse = Singleton.Instance.CurrentMouse;
                         Singleton.Instance.CurrentGameState = Singleton.GameState.TileSelected;
                     }
@@ -207,6 +195,16 @@ public class MainScene : Game
                 {
                     ShiftRowsUp();
                     Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
+                }
+
+                if (IsButtonClicked(_drawing.SettingRect))
+                {
+                    Reset();
+                }
+
+                if (IsButtonClicked(_drawing.VolumeRect))
+                {
+                    Console.WriteLine("[VOLUME] Volume button clicked.");
                 }
 
                 if (Singleton.Instance.CurrentMouse.LeftButton == ButtonState.Pressed &&
@@ -301,10 +299,39 @@ public class MainScene : Game
 
                         // เคลียร์สถานะ และกลับไปสถานะเล่นเกม
                         Singleton.Instance.PossibleClicked.Clear();
-                        Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
+                        Singleton.Instance.CurrentGameState = Singleton.GameState.GameTurnEnded;
                     }
                 }
                 break;
+            case Singleton.GameState.GameTurnEnded:
+                // เริ่มลูป drop+clear
+                while (true)
+                {
+                    // 1) ไล่สั่งบล็อกทุกตัวให้ drop ลงมา
+                    for (int y = Singleton.GAMEHEIGHT - 2; y >= 0; y--)
+                    {
+                        for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+                        {
+                            TryDropBlockDown(new Point(x, y));
+                        }
+                    }
+
+                    // 2) เช็กแล้วลบเต็มแถว ถ้าไม่มีแถวไหนถูกลบเลย ก็ออกจากลูป
+                    bool cleared = CheckAndClearFullRows();
+                    if (!cleared) break;
+                }
+
+                ShiftRowsUp(); // Shift rows when turn ends
+                if (Singleton.Instance.CurrentGameState == Singleton.GameState.GameOver)
+                {
+                    // Console.WriteLine("[GAME OVER] Game Over due to shift up.");
+                    return;
+                }
+
+                Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
+
+                break;
+
             case Singleton.GameState.GamePaused:
                 // handle unpause
                 if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.Escape) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
@@ -344,17 +371,22 @@ public class MainScene : Game
                 break;
             case Singleton.GameState.GamePlaying:
                 {
-                    _drawing._DrawGamePlaying(_spriteBatch, _gameObjects, _numOjects);
+                    _drawing._DrawGamePlaying(_spriteBatch, _gameObjects, _numObjects);
                 }
                 break;
-            case Singleton.GameState.WaitingForSelection:
+            case Singleton.GameState.GameWaitingForSelection:
                 {
-                    _drawing._DrawWaitingForSelect(_spriteBatch, _gameObjects, _numOjects);
+                    _drawing._DrawWaitingForSelect(_spriteBatch, _gameObjects, _numObjects);
                 }
                 break;
             case Singleton.GameState.TileSelected:
                 {
-                    _drawing._DrawTileSelected(_spriteBatch, _gameObjects, _numOjects);
+                    _drawing._DrawTileSelected(_spriteBatch, _gameObjects, _numObjects);
+                }
+                break;
+            case Singleton.GameState.GameTurnEnded:
+                {
+                    _drawing._DrawGameTurnEnded(_spriteBatch, _gameObjects, _numObjects);
                 }
                 break;
             case Singleton.GameState.GamePaused:
@@ -383,18 +415,10 @@ public class MainScene : Game
         Singleton.Instance.Score = 0;
         Singleton.Instance.CurrentGameState = Singleton.GameState.GameStart;
 
-        CreateRow(1);
+        Singleton.Instance.Score = 0;
+        Singleton.Instance.Timer = 0;
+        CreateRow(3);
     }
-
-    // protected bool CheckDeletableRow(int[] checkingRow)
-    // {
-    //     for (int i = 0; i < checkingRow.Length; i++)
-    //     {
-    //         if (checkingRow[i] == 0)
-    //             return false;
-    //     }
-    //     return true;
-    // }
 
     private bool IsButtonClicked(Rectangle buttonRect)
     {
@@ -474,7 +498,54 @@ public class MainScene : Game
         return availableSpaces;
     }
 
+    private bool CheckAndClearFullRows()
+    {
+        bool anyCleared = false;
+        // เดินเช็กแต่ละแถว
+        for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
+        {
+            bool fullRow = true;
+            for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+            {
+                if (Singleton.Instance.BlockMap[y, x] == null)
+                {
+                    fullRow = false;
+                    break;
+                }
+            }
 
+            if (!fullRow) continue;
+
+            anyCleared = true;
+
+            // เก็บบล็อกที่ต้องลบ (เพื่อไม่ลบซ้ำเวลา span >1)
+            var blocksToRemove = new HashSet<Block>(); // Change
+            for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+                blocksToRemove.Add(Singleton.Instance.BlockMap[y, x]);
+
+            // อัปเดตคะแนนตาม BlockType (One=1, Two=2, Three=3, Four=4)
+            foreach (var b in blocksToRemove)
+            {
+                if (b.CurrentBlockType != Block.BlockType.Rock)
+                    Singleton.Instance.Score += (int)b.CurrentBlockType + 1;
+                _gameObjects.Remove(b);
+            }
+
+            // ล้างข้อมูลใน GameBoard/BlockMap ของแถวนั้น
+            for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+            {
+                Singleton.Instance.GameBoard[y, x] = 0;
+                Singleton.Instance.BlockMap[y, x] = null;
+            }
+
+            // ทำให้เช็กที่แถวเดิมอีกครั้งเผื่อแถวบน ๆ ก็เต็มด้วย
+            y--;
+
+            _numObjects = _gameObjects.Count;
+        }
+
+        return anyCleared;
+    }
 
     protected List<Point> FindPossibleClickedTiles(Point mousePosition)
     {
@@ -684,5 +755,14 @@ public class MainScene : Game
         // อัปเดตตำแหน่งบนจอ
         block.Position = new Vector2(headX * Singleton._TILESIZE, dropY * Singleton._TILESIZE);
     }
-
 }
+
+
+// Timer Count in Seconds
+
+// _rowTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+// if (_rowTimer >= 5f)
+// {
+//     _rowTimer -= 5f;
+//     ShiftRowsUp();    // เรียกเมธ็อดใหม่
+// }
