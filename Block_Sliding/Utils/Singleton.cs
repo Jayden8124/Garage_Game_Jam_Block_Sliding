@@ -47,6 +47,7 @@ namespace Dog_Sliding
         public KeyboardState PreviousKey, CurrentKey;
         public MouseState PreviousMouse, CurrentMouse;
 
+        public Audio AudioManager;
 
         // Singleton instance
         private static Singleton instance;
