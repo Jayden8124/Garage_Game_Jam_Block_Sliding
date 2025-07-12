@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -21,19 +22,19 @@ namespace Dog_Sliding
             Pieces = new Vector2[4];
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-        }
+        // public override void Update(GameTime gameTime)
+        // {
+        //     base.Update(gameTime);
+        // }
 
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            Rectangle dest = new Rectangle((int)Position.X, (int)Position.Y, Singleton._TILESIZE * GetLength(), Singleton._TILESIZE);
+        // public override void Draw(SpriteBatch spriteBatch)
+        // {
+        //     Rectangle dest = new Rectangle((int)Position.X, (int)Position.Y, Singleton._TILESIZE * GetLength(), Singleton._TILESIZE);
 
-            spriteBatch.Draw(_texture, dest, Color.White);
+        //     spriteBatch.Draw(_texture, dest, Color.White);
 
-            base.Draw(spriteBatch);
-        }
+        //     base.Draw(spriteBatch);
+        // }
 
 
         public override void Reset()
@@ -97,5 +98,76 @@ namespace Dog_Sliding
                 _ => 0
             };
         }
+
+        // ภายใน class Block : GameObject
+        private Vector2 _startPosition;
+        private Vector2 _targetPosition;
+        private float _moveElapsed, _moveDuration;
+        public bool IsMoving { get; private set; }
+
+        private float _clearElapsed, _clearDuration;
+        public bool IsClearing { get; private set; }
+
+        // เริ่มอนิเมชันเคลื่อนที่
+        public void StartMove(Vector2 newTarget, float duration)
+        {
+            _startPosition = Position;
+            _targetPosition = newTarget;
+            _moveDuration = duration;
+            _moveElapsed = 0f;
+            IsMoving = true;
+        }
+
+        // เริ่มอนิเมชันลบ (fade/scale out)
+        public void StartClear(float duration)
+        {
+            _clearDuration = duration;
+            _clearElapsed = 0f;
+            IsClearing = true;
+        }
+
+        // อัปเดตอนิเมชัน
+        public override void Update(GameTime gameTime)
+        {
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (IsMoving)
+            {
+                _moveElapsed += dt;
+                float t = Math.Min(_moveElapsed / _moveDuration, 1f);
+                Position = Vector2.Lerp(_startPosition, _targetPosition, t);
+
+                if (t >= 1f)
+                    IsMoving = false;
+            }
+            else if (IsClearing)
+            {
+                _clearElapsed += dt;
+                float t = Math.Min(_clearElapsed / _clearDuration, 1f);
+                // ตัวอย่าง: ย่อขนาดให้เล็กลง
+                Scale = new Vector2(1f - t, 1f - t);
+
+                if (t >= 1f)
+                    IsClearing = false;
+            }
+
+            base.Update(gameTime);
+        }
+
+        // วาดโดยใช้ Scale เมื่อกำลังลบ
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            int length = GetLength();
+            Vector2 origin = new Vector2(0, 0);
+            Rectangle dest = new Rectangle(
+                (int)Position.X,
+                (int)Position.Y,
+                (int)(Singleton._TILESIZE * length * Scale.X),
+                (int)(Singleton._TILESIZE * Scale.Y)
+            );
+            spriteBatch.Draw(_texture, dest, Color.White);
+            base.Draw(spriteBatch);
+        }
+
     }
 }

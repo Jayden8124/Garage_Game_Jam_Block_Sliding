@@ -22,6 +22,7 @@ namespace Dog_Sliding
         public Texture2D UIText { get; private set; }
         public Texture2D ButtonUp { get; private set; }
         public Texture2D GameOver { get; private set; }
+        public Texture2D Pause { get; private set; }
         public Texture2D Setting { get; private set; }
         public Texture2D Volume { get; private set; }
 
@@ -59,6 +60,7 @@ namespace Dog_Sliding
             UIText = Content.Load<Texture2D>("ui");
             ButtonUp = Content.Load<Texture2D>("button_up");
             GameOver = Content.Load<Texture2D>("game_over");
+            Pause = Content.Load<Texture2D>("pause");
             Setting = Content.Load<Texture2D>("setting");
             Volume = Content.Load<Texture2D>("volume");
 
@@ -80,6 +82,65 @@ namespace Dog_Sliding
             for (int i = 0; i < data.Length; i++) data[i] = Color.White;
             Singleton.Instance._Rect.SetData(data);
         }
+
+        // วาดทุกเซลล์ที่มีบล็อก จาก BlockMap
+        // private void DrawBlocksFromMap(SpriteBatch spriteBatch)
+        // {
+        //     for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
+        //     {
+        //         for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+        //         {
+        //             var block = Singleton.Instance.BlockMap[y, x];
+        //             if (block != null)
+        //             {
+        //                 // เลือก texture ตามชนิดบล็อก
+        //                 Texture2D tex = block.CurrentBlockType == Block.BlockType.Rock
+        //                     ? DogTextures[5]
+        //                     : DogTextures[(int)block.CurrentBlockType + 1];
+
+        //                 var dest = new Rectangle(
+        //                     x * Singleton._TILESIZE,
+        //                     y * Singleton._TILESIZE,
+        //                     Singleton._TILESIZE,
+        //                     Singleton._TILESIZE
+        //                 );
+        //                 spriteBatch.Draw(tex, dest, Color.White);
+        //             }
+        //         }
+        //     }
+        // }
+
+        // Drawing.cs
+        private void DrawBlocksFromMap(SpriteBatch spriteBatch)
+        {
+            for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
+            {
+                for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+                {
+                    Block block = Singleton.Instance.BlockMap[y, x];
+                    if (block == null) continue;
+
+                    // วาดเฉพาะที่เป็น head (ตำแหน่งแรกสุดของบล็อก)
+                    bool isHead = (x == 0) || Singleton.Instance.BlockMap[y, x - 1] != block;
+                    if (!isHead) continue;
+
+                    // เลือก texture ตามชนิดบล็อก
+                    Texture2D tex = block.CurrentBlockType == Block.BlockType.Rock
+                        ? DogTextures[5]
+                        : DogTextures[(int)block.CurrentBlockType + 1];
+
+                    // กำหนด dest rectangle ให้กว้าง = TILESIZE * GetLength()
+                    Rectangle dest = new Rectangle(
+                        x * Singleton._TILESIZE,
+                        y * Singleton._TILESIZE,
+                        Singleton._TILESIZE * block.GetLength(),
+                        Singleton._TILESIZE
+                    );
+                    spriteBatch.Draw(tex, dest, Color.White);
+                }
+            }
+        }
+
 
         public void _DrawGameStart(SpriteBatch _spriteBatch)
         {
@@ -158,14 +219,15 @@ namespace Dog_Sliding
                     // ถ้าช่องมีบล็อก อาจใส่สีอีกแบบให้เด่นขึ้น
                     Color fill = (cell == 0) ? baseColor : Color.DarkOrange;
 
+                    if (y == Singleton.GAMEHEIGHT - 1) fill = Color.Red;
                     _spriteBatch.Draw(Singleton.Instance._Rect, rect, fill);
                 }
             }
-
-            for (int i = 0; i < _numOjects; i++)
-            {
-                _gameObjects[i].Draw(_spriteBatch);
-            }
+            DrawBlocksFromMap(_spriteBatch);
+            // for (int i = 0; i < _numOjects; i++)
+            // {
+            //     _gameObjects[i].Draw(_spriteBatch);
+            // }
             DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, new Rectangle(0, 0, 540, 600), Color.SaddleBrown, 5);
             DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, new Rectangle(0, 540, 540, 60), Color.Black, 5);
 
@@ -246,11 +308,12 @@ namespace Dog_Sliding
             {
                 _spriteBatch.Draw(Singleton.Instance._Rect, new Vector2(Singleton._TILESIZE * p.X, Singleton._TILESIZE * p.Y), null, Color.Gold * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
+            DrawBlocksFromMap(_spriteBatch);
 
-            for (int i = 0; i < _numOjects; i++)
-            {
-                _gameObjects[i].Draw(_spriteBatch);
-            }
+            // for (int i = 0; i < _numOjects; i++)
+            // {
+            //     _gameObjects[i].Draw(_spriteBatch);
+            // }
 
             DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, new Rectangle(0, 0, 540, 600), Color.SaddleBrown, 5);
             DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, new Rectangle(0, 540, 540, 60), Color.Black, 5);
@@ -316,6 +379,7 @@ namespace Dog_Sliding
 
                     // ถ้าช่องมีบล็อก อาจใส่สีอีกแบบให้เด่นขึ้น
                     Color fill = (cell == 0) ? baseColor : Color.DarkOrange;
+                    if (y == Singleton.GAMEHEIGHT - 1) fill = Color.Red;
 
                     _spriteBatch.Draw(Singleton.Instance._Rect, rect, fill);
                 }
@@ -325,6 +389,8 @@ namespace Dog_Sliding
             {
                 _spriteBatch.Draw(Singleton.Instance._Rect, new Vector2(Singleton._TILESIZE * p.X, Singleton._TILESIZE * p.Y), null, Color.Gold * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
+
+
             // draw selected tile
             // block
             // draw selected block in red
@@ -354,10 +420,13 @@ namespace Dog_Sliding
                 );
             }
 
-            for (int i = 0; i < _numOjects; i++)
-            {
-                _gameObjects[i].Draw(_spriteBatch);
-            }
+            DrawBlocksFromMap(_spriteBatch);
+
+
+            // for (int i = 0; i < _numOjects; i++)
+            // {
+            //     _gameObjects[i].Draw(_spriteBatch);
+            // }
             DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, new Rectangle(0, 0, 540, 600), Color.SaddleBrown, 5);
             DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, new Rectangle(0, 540, 540, 60), Color.Black, 5);
 
@@ -421,20 +490,22 @@ namespace Dog_Sliding
 
                     // ถ้าช่องมีบล็อก อาจใส่สีอีกแบบให้เด่นขึ้น
                     Color fill = (cell == 0) ? baseColor : Color.DarkOrange;
+                    if (y == Singleton.GAMEHEIGHT - 1) fill = Color.Red;
 
                     _spriteBatch.Draw(Singleton.Instance._Rect, rect, fill);
                 }
             }
-
             foreach (Point p in Singleton.Instance.PossibleClicked)
             {
                 _spriteBatch.Draw(Singleton.Instance._Rect, new Vector2(Singleton._TILESIZE * p.X, Singleton._TILESIZE * p.Y), null, Color.Gold * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
 
-            for (int i = 0; i < _numOjects; i++)
-            {
-                _gameObjects[i].Draw(_spriteBatch);
-            }
+            DrawBlocksFromMap(_spriteBatch);
+
+            // for (int i = 0; i < _numOjects; i++)
+            // {
+            //     _gameObjects[i].Draw(_spriteBatch);
+            // }
             DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, new Rectangle(0, 0, 540, 600), Color.SaddleBrown, 5);
             DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, new Rectangle(0, 540, 540, 60), Color.Black, 5);
 
@@ -498,21 +569,21 @@ namespace Dog_Sliding
                     // ถ้าช่องมีบล็อก อาจใส่สีอีกแบบให้เด่นขึ้น
                     Color fill = (cell == 0) ? baseColor : Color.DarkOrange;
 
+                    if (y == Singleton.GAMEHEIGHT - 1) fill = Color.Red;
+
                     _spriteBatch.Draw(Singleton.Instance._Rect, rect, fill);
                 }
             }
 
             foreach (Point p in Singleton.Instance.PossibleClicked)
             {
-                _spriteBatch.Draw(Singleton.Instance._Rect, new Vector2(Singleton._TILESIZE * p.X, Singleton._TILESIZE * p.Y), null, Color.DarkGreen * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                _spriteBatch.Draw(Singleton.Instance._Rect, new Vector2(Singleton._TILESIZE * p.X, Singleton._TILESIZE * p.Y), null, Color.Gold * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
             }
 
-            for (int i = 0; i < _numOjects; i++)
-            {
-                _gameObjects[i].Draw(_spriteBatch);
-            }
+            DrawBlocksFromMap(_spriteBatch);
             DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, new Rectangle(0, 0, 540, 600), Color.SaddleBrown, 5);
             DrawLine(_spriteBatch, Singleton.Instance._Rect, new Vector2(0, 540), new Vector2(540, 540), Color.Black, 5);
+            _spriteBatch.Draw(Pause, new Rectangle(Singleton._TILESIZE * (Singleton.GAMEWIDTH / 2) - 100, Singleton._TILESIZE * (Singleton.GAMEHEIGHT / 2) - 110, 260, 100), new Rectangle(32, 325, 960, 330), Color.White);
 
             _spriteBatch.End();
         }
@@ -528,13 +599,64 @@ namespace Dog_Sliding
 
             // Layer 2: User Interface
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            _spriteBatch.Draw(GameOver, new Rectangle(Singleton.SCREENWIDTH / 2 - 265, Singleton.SCREENHEIGHT / 2 - 169, 530, 339), new Rectangle(301, 528, 530, 339), Color.White); // Game Over Background
+
             _spriteBatch.Draw(UIText, new Rectangle(70, 60, 200, 80), new Rectangle(81, 149, 910, 340), Color.White);
             _spriteBatch.Draw(UIText, new Rectangle(70, 180, 200, 80), new Rectangle(81, 548, 910, 360), Color.White);
 
             _spriteBatch.Draw(ButtonUp, ButtonUpRect, new Rectangle(147, 219, 787, 636), Color.White);
+            _spriteBatch.Draw(Setting, SettingRect, new Rectangle(141, 165, 438, 382), Color.White);
+            _spriteBatch.Draw(Volume, VolumeRect, new Rectangle(82, 158, 432, 405), Color.White);
 
-            // _spriteBatch.Draw(ExitText, ExitRect, new Rectangle(/* ตำแหน่งของภาพ Sprite */), Color.White); // Back to Main Menu Button
+            _spriteBatch.End();
+
+            // Layer 3: Text
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+
+            string timeText = String.Format($"{(int)Singleton.Instance.Timer % 60:00}");
+            Vector2 timeSize = Font.MeasureString(timeText);
+            _spriteBatch.DrawString(Font, timeText, new Vector2(210 - timeSize.X * 0.5f, 100 - timeSize.Y * 0.5f), Color.Black);
+
+            string scoreText = Singleton.Instance.Score.ToString();
+            Vector2 textSize = Font.MeasureString(scoreText);
+            _spriteBatch.DrawString(Font, scoreText, new Vector2(215 - textSize.X * 0.5f, 220 - textSize.Y * 0.5f), Color.Black);
+
+            _spriteBatch.End();
+
+            // Layer 4: Game Board
+            int offsetX = (Singleton.SCREENWIDTH - (Singleton.GAMEWIDTH * Singleton._TILESIZE)) / 2;
+            int offsetY = (Singleton.SCREENHEIGHT - (Singleton.GAMEHEIGHT * Singleton._TILESIZE)) / 2;
+
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: Matrix.CreateTranslation(offsetX, offsetY, 0f));
+            // Draw Board Tiles
+            for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
+            {
+                for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+                {
+                    Rectangle rect = new Rectangle(x * Singleton._TILESIZE, y * Singleton._TILESIZE, Singleton._TILESIZE, Singleton._TILESIZE);
+
+                    // ใช้ลายหมากรุก: คาราเมลอ่อน-เข้ม
+                    Color lightCaramel = new Color(248, 209, 146); // คาราเมลอ่อน
+                    Color darkCaramel = new Color(124, 75, 24);    // คาราเมลเข้ม
+
+                    Color baseColor = ((x + y) % 2 == 0) ? lightCaramel : darkCaramel;
+
+                    _spriteBatch.Draw(Singleton.Instance._Rect, rect, baseColor);
+                }
+            }
+
+            // foreach (Point p in Singleton.Instance.PossibleClicked)
+            // {
+            //     _spriteBatch.Draw(Singleton.Instance._Rect, new Vector2(Singleton._TILESIZE * p.X, Singleton._TILESIZE * p.Y), null, Color.Gold * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            // }
+
+
+            // for (int i = 0; i < _numOjects; i++)
+            // {
+            //     _gameObjects[i].Draw(_spriteBatch);
+            // }
+            DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, new Rectangle(0, 0, 540, 600), Color.SaddleBrown, 5);
+            DrawLine(_spriteBatch, Singleton.Instance._Rect, new Vector2(0, 540), new Vector2(540, 540), Color.Black, 5);
+            _spriteBatch.Draw(GameOver, new Rectangle(Singleton._TILESIZE * (Singleton.GAMEWIDTH / 2) - 150, Singleton._TILESIZE * (Singleton.GAMEHEIGHT / 2) - 100, 360, 120), new Rectangle(25, 240, 1026, 358), Color.White);
 
             _spriteBatch.End();
         }
