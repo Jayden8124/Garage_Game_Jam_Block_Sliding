@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/SFX/lost-game-over.wav</SourceFile>
+  <SourceTime>2025-07-13T04:32:54.9585994+07:00</SourceTime>
+  <DestFile>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/bin/DesktopGL/lost-game-over.xnb</DestFile>
+  <DestTime>2025-07-13T04:34:14.7258086+07:00</DestTime>
+  <Importer>WavImporter</Importer>
+  <ImporterTime>2024-08-17T00:05:56+07:00</ImporterTime>
+  <Processor>SoundEffectProcessor</Processor>
+  <ProcessorTime>2024-08-17T00:05:56+07:00</ProcessorTime>
+  <Parameters>
+    <Key>Quality</Key>
+    <Value>Best</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

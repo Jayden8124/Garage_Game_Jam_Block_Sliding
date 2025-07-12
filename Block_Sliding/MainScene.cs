@@ -4,6 +4,8 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Dog_Sliding;
 
@@ -20,6 +22,12 @@ public class MainScene : Game
     private Drawing _drawing;
 
     private bool _pendingShiftAfterClear;
+    private float _checkAndClearAnimate;
+    private float _shiftRowsUpAnimate;
+    private float _dropBlockAnimate;
+    private float _moveAnimate;
+    private bool _showHowToPlay;
+    private bool _isPlayOver;
 
     public MainScene()
     {
@@ -39,6 +47,13 @@ public class MainScene : Game
         _gameObjects = new List<GameObject>();
         _drawing = new Drawing(GraphicsDevice);
 
+        _checkAndClearAnimate = 0.7f;
+        _shiftRowsUpAnimate = 0.7f;
+        _dropBlockAnimate = 0.7f;
+        _moveAnimate = 0.7f;
+
+        _isPlayOver = false;
+
         Singleton.Instance.PossibleClicked = new List<Point>();
         Singleton.Instance.Random = new System.Random();
 
@@ -57,7 +72,7 @@ public class MainScene : Game
         Singleton.Instance.CurrentGameState = Singleton.GameState.GameStart;
 
         Singleton.Instance.AudioManager.LoadSounds(Content);
-        Singleton.Instance.AudioManager.PlayMusic("Bgm", 0.5f);
+        Singleton.Instance.AudioManager.PlayMusic("Bgm", 0.2f);
     }
 
     protected override void Update(GameTime gameTime)
@@ -100,197 +115,52 @@ public class MainScene : Game
                 {
                     Exit();
                 }
+                if (IsButtonClicked(_drawing.HowToPlayRect))
+                {
+                    _showHowToPlay = !_showHowToPlay;
+                }
+
+                if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.M) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
+                {
+                    if (Singleton.Instance.AudioManager.IsMuted())
+                    {
+                        Singleton.Instance.AudioManager.UnmuteAll();
+                    }
+                    else
+                    {
+                        Singleton.Instance.AudioManager.MuteAll();
+                    }
+                }
                 break;
-
-            // case Singleton.GameState.GamePlaying:
-            //     if (Singleton.Instance.CurrentGameState == Singleton.GameState.GameOver)
-            //     {
-            //         Console.WriteLine("[GAME OVER] Game Over due to shift up.");
-            //         return;
-            //     }
-
-            //     if (Singleton.Instance.Timer < 0f)
-            //     {
-            //         ShiftRowsUp();
-            //         Singleton.Instance.Timer = 20.8f;
-            //         Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
-            //     }
-
-            //     while (true)
-            //     {
-            //         // Block Drop
-            //         for (int y = Singleton.GAMEHEIGHT - 2; y >= 0; y--)
-            //         {
-            //             for (int x = 0; x < Singleton.GAMEWIDTH; x++)
-            //             {
-            //                 TryDropBlockDown(new Point(x, y));
-            //             }
-            //         }
-
-            //         bool cleared = CheckAndClearFullRows();
-            //         if (cleared)
-            //         {
-            //             ShiftRowsUp(); // Shift rows when turn ends   
-            //         }
-            //         else
-            //         {
-            //             break;
-            //         }
-            //     }
-
-            //     // Find all possible clicked tiles before change state to WaitingForSelection
-            //     Singleton.Instance.PossibleClicked.Clear();
-            //     HashSet<Point> possibleClicked = new HashSet<Point>();
-
-            //     for (int i = 0; i < Singleton.GAMEWIDTH; i++)
-            //     {
-            //         for (int j = 0; j < Singleton.GAMEHEIGHT - 1; j++)
-            //         {
-            //             List<Point> result = FindPossibleClickedTiles(new Point(i, j));
-            //             foreach (Point pt in result)
-            //             {
-            //                 possibleClicked.Add(pt);
-            //             }
-            //         }
-            //     }
-            //     Singleton.Instance.PossibleClicked = possibleClicked.ToList();
-
-            //     // Console.WriteLine("[INIT] BlockMap Initialized");
-            //     // for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
-            //     // {
-            //     //     string line = "";
-            //     //     for (int x = 0; x < Singleton.GAMEWIDTH; x++)
-            //     //     {
-            //     //         if (Singleton.Instance.BlockMap[y, x] != null)
-            //     //             line += Singleton.Instance.BlockMap[y, x].CurrentBlockType + " ";
-            //     //         else
-            //     //             line += "null ";
-            //     //     }
-            //     //     Console.WriteLine($"Y={y}: {line}");
-            //     // }
-
-            //     // Console.WriteLine("[INIT] GameBoard Initialized");
-            //     // for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
-            //     // {
-            //     //     string line = "";
-            //     //     for (int x = 0; x < Singleton.GAMEWIDTH; x++)
-            //     //     {
-            //     //         line += Singleton.Instance.GameBoard[y, x] + " ";
-            //     //     }
-            //     //     Console.WriteLine($"Y={y}: {line}");
-            //     // }
-
-            //     Singleton.Instance.CurrentGameState = Singleton.GameState.GameWaitingForSelection;
-
-            //     break;
-            // case Singleton.GameState.GamePlaying:
-            //     // 1) If we have a pending shift from a clear, wait for all clears to finish…
-            //     if (_pendingShiftAfterClear)
-            //     {
-            //         if (IsAnyAnimationRunning()) return;
-            //         ShiftRowsUp();
-            //         _pendingShiftAfterClear = false;
-            //         return;
-            //     }
-
-            //     // 2) Timer‐driven automatic shift
-            //     if (Singleton.Instance.Timer < 0f)
-            //     {
-            //         ShiftRowsUp();
-            //         Singleton.Instance.Timer = 20.8f;
-            //         return; // let the shift animation play before doing anything else
-            //     }
-
-            //     // 3) Single drop pass
-            //     for (int y = Singleton.GAMEHEIGHT - 2; y >= 0; y--)
-            //         for (int x = 0; x < Singleton.GAMEWIDTH; x++)
-            //             TryDropBlockDown(new Point(x, y));
-            //     if (IsAnyAnimationRunning()) return;
-
-            //     // 4) Single clear pass (if any full rows)
-            //     if (CheckAndClearFullRows())
-            //     {
-            //         // clear animations now running; defer the shift
-            //         _pendingShiftAfterClear = true;
-            //         return;
-            //     }
-
-            //     // 5) No more drop/clear to do—proceed to find possible clicks
-            //     Singleton.Instance.PossibleClicked.Clear();
-            //     var possible = new HashSet<Point>();
-            //     for (int i = 0; i < Singleton.GAMEWIDTH; i++)
-            //         for (int j = 0; j < Singleton.GAMEHEIGHT - 1; j++)
-            //             foreach (var pt in FindPossibleClickedTiles(new Point(i, j)))
-            //                 possible.Add(pt);
-            //     Singleton.Instance.PossibleClicked = possible.ToList();
-            //     Singleton.Instance.CurrentGameState = Singleton.GameState.GameWaitingForSelection;
-            //     break;
-
-            // case Singleton.GameState.GamePlaying:
-            //     // 1) If we have a pending shift from a clear, wait for all clears to finish…
-            //     if (_pendingShiftAfterClear)
-            //     {
-            //         if (IsAnyAnimationRunning()) return;
-            //         ShiftRowsUp();
-            //         _pendingShiftAfterClear = false;
-            //         return;
-            //     }
-
-            //     // 2) Timer‐driven automatic shift
-            //     if (Singleton.Instance.Timer < 0f)
-            //     {
-            //         ShiftRowsUp();
-            //         Singleton.Instance.Timer = 20.8f;
-            //         return; // let the shift animation play before doing anything else
-            //     }
-
-            //     // 3) Single drop pass
-            //     for (int y = Singleton.GAMEHEIGHT - 2; y >= 0; y--)
-            //         for (int x = 0; x < Singleton.GAMEWIDTH; x++)
-            //             TryDropBlockDown(new Point(x, y));
-            //     if (IsAnyAnimationRunning()) return;
-
-            //     // 4) Single clear pass (if any full rows)
-            //     if (CheckAndClearFullRows())
-            //     {
-            //         // clear animations now running; defer the shift
-            //         _pendingShiftAfterClear = true;
-            //         return;
-            //     }
-
-            //     // 5) No more drop/clear to do—proceed to find possible clicks
-            //     Singleton.Instance.PossibleClicked.Clear();
-            //     var possible = new HashSet<Point>();
-            //     for (int i = 0; i < Singleton.GAMEWIDTH; i++)
-            //         for (int j = 0; j < Singleton.GAMEHEIGHT - 1; j++)
-            //             foreach (var pt in FindPossibleClickedTiles(new Point(i, j)))
-            //                 possible.Add(pt);
-            //     Singleton.Instance.PossibleClicked = possible.ToList();
-            //     Singleton.Instance.CurrentGameState = Singleton.GameState.GameWaitingForSelection;
-            //     break;
             case Singleton.GameState.GamePlaying:
-                // 1) ถ้ามี pending shift จาก clear รอบก่อน ให้รอให้ clear จบแล้วค่อย shift
-
                 while (true)
                 {
-                    // 3a) Drop ทุกบล็อกลงล่าง
                     for (int y = Singleton.GAMEHEIGHT - 2; y >= 0; y--)
                         for (int x = 0; x < Singleton.GAMEWIDTH; x++)
                             TryDropBlockDown(new Point(x, y));
-                    // ถ้ายังมีบล็อกกำลังเคลื่อน ให้รอ animation จบก่อน
+
                     if (IsAnyAnimationRunning())
                         return;
 
-                    // 3b) ตรวจสอบและลบแถวเต็มทีละแถว
                     if (CheckAndClearFullRows())
                     {
-                        // เจอแถวเต็ม รอบนี้สั่ง clear animation แล้วรอให้มันจบ
                         _pendingShiftAfterClear = true;
+                        Singleton.Instance.AudioManager.PlayEffect("success-clear");
                         return;
                     }
 
-                    // ถ้าไม่มีแถวให้ clear อีก → ออกจาก loop
                     break;
+                }
+
+                if (IsGameOverByShift())
+                {
+                    Singleton.Instance.AudioManager.PlayEffect("heart-beat");
+                    MediaPlayer.Pause();
+                }
+                else
+                {
+                    MediaPlayer.Resume();
+                    Singleton.Instance.AudioManager._soundInstances["heart-beat"].Stop();
                 }
 
                 if (_pendingShiftAfterClear)
@@ -302,7 +172,17 @@ public class MainScene : Game
                     return;
                 }
 
-                // 2) ถ้า Timer หมด ให้ shift ทันที แล้วรอ animation จบ
+                if (IsButtonClicked(_drawing.VolumeRect) || Singleton.Instance.CurrentKey.IsKeyDown(Keys.M) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
+                {
+                    if (Singleton.Instance.AudioManager.IsMuted())
+                    {
+                        Singleton.Instance.AudioManager.UnmuteAll();
+                    }
+                    else
+                    {
+                        Singleton.Instance.AudioManager.MuteAll();
+                    }
+                }
                 if (Singleton.Instance.Timer < 0f)
                 {
                     ShiftRowsUp();
@@ -310,10 +190,6 @@ public class MainScene : Game
                     return;
                 }
 
-                // 3) Loop ทำ Drop → Clear จนไม่มีแถวให้ลบอีก
-
-
-                // 4) ไม่มีอะไรจะ drop/clear แล้ว → เปลี่ยนไป WaitingForSelection
                 Singleton.Instance.PossibleClicked.Clear();
                 var possible = new HashSet<Point>();
                 for (int i = 0; i < Singleton.GAMEWIDTH; i++)
@@ -328,8 +204,9 @@ public class MainScene : Game
                 Singleton.Instance.CurrentMouse = Mouse.GetState();
 
                 // Pause
-                if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.Escape) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
+                if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.P) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
                 {
+                    Singleton.Instance.AudioManager.PlayEffect("howtoplay_click");
                     Singleton.Instance.CurrentGameState = Singleton.GameState.GamePaused;
                 }
 
@@ -339,9 +216,14 @@ public class MainScene : Game
                     Singleton.Instance.Timer = 20.8f;
                     Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
                 }
+                if (IsButtonClicked(_drawing.FreezeSkillRect) && Singleton.Instance.Score >= 10)
+                {
+                    Singleton.Instance.AudioManager.PlayEffect("freezing-hza");
+                    Singleton.Instance.Timer = 20.8f;
+                    Singleton.Instance.Score -= 10;
+                }
 
-                // Check if the mouse is clicked on a button up
-                if (IsButtonClicked(_drawing.ButtonUpRect))
+                if (IsButtonClicked(_drawing.ButtonUpRect) || Singleton.Instance.CurrentKey.IsKeyDown(Keys.Space) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
                 {
                     Singleton.Instance.Timer = 20.8f; // Reset timer for next turn
 
@@ -357,17 +239,34 @@ public class MainScene : Game
                     Singleton.Instance.CurrentGameState = Singleton.GameState.GameStart;
                 }
 
-                if (IsButtonClicked(_drawing.VolumeRect))
+                if (IsButtonClicked(_drawing.VolumeRect) || Singleton.Instance.CurrentKey.IsKeyDown(Keys.M) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
                 {
-                    Console.WriteLine("[VOLUME] Volume button clicked.");
+                    if (Singleton.Instance.AudioManager.IsMuted())
+                    {
+                        Singleton.Instance.AudioManager.UnmuteAll();
+                    }
+                    else
+                    {
+                        Singleton.Instance.AudioManager.MuteAll();
+                    }
                 }
 
+
+                if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.R) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
+                {
+                    Reset();
+                    Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
+                    _numObjects = _gameObjects.Count;
+                    return;
+                }
 
                 if (Singleton.Instance.CurrentMouse.LeftButton == ButtonState.Pressed &&
                     Singleton.Instance.PreviousMouse.LeftButton == ButtonState.Released)
                 {
                     int xPos = Singleton.Instance.CurrentMouse.X / Singleton._TILESIZE - 6; // shift to center
                     int yPos = Singleton.Instance.CurrentMouse.Y / Singleton._TILESIZE - 1; // shift to center
+
+                    Singleton.Instance.AudioManager.PlayEffect("menu-click");
 
                     Singleton.Instance.ClickedPos = new Point(xPos, yPos);
                     if (Singleton.Instance.PossibleClicked.Contains(Singleton.Instance.ClickedPos))
@@ -376,6 +275,7 @@ public class MainScene : Game
                         Singleton.Instance.SelectedTile = Singleton.Instance.ClickedPos;
                         Singleton.Instance.PossibleClicked.AddRange(FindAvailableSpaces(Singleton.Instance.SelectedTile));
                         Singleton.Instance.PreviousMouse = Singleton.Instance.CurrentMouse;
+                        Singleton.Instance.AudioManager.PlayEffect("perritoguautierno");
                         Singleton.Instance.CurrentGameState = Singleton.GameState.GameTileSelected;
                     }
                 }
@@ -384,9 +284,15 @@ public class MainScene : Game
                 Singleton.Instance.CurrentMouse = Mouse.GetState();
 
                 // Pause
-                if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.Escape) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
+                if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.P) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
                 {
                     Singleton.Instance.CurrentGameState = Singleton.GameState.GamePaused;
+                }
+
+                if (IsButtonClicked(_drawing.FreezeSkillRect) && Singleton.Instance.Score >= 10)
+                {
+                    Singleton.Instance.Timer = 20.8f;
+                    Singleton.Instance.Score -= 10;
                 }
 
                 if (Singleton.Instance.Timer < 0f)
@@ -397,7 +303,7 @@ public class MainScene : Game
                 }
 
                 // Check if the mouse is clicked on a button up
-                if (IsButtonClicked(_drawing.ButtonUpRect))
+                if (IsButtonClicked(_drawing.ButtonUpRect) || Singleton.Instance.CurrentKey.IsKeyDown(Keys.Space) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
                 {
                     Singleton.Instance.Timer = 20.8f; // Reset timer for next turn
 
@@ -414,13 +320,28 @@ public class MainScene : Game
                     Singleton.Instance.CurrentGameState = Singleton.GameState.GameStart;
                 }
 
-                if (IsButtonClicked(_drawing.VolumeRect))
+                if (IsButtonClicked(_drawing.VolumeRect) || Singleton.Instance.CurrentKey.IsKeyDown(Keys.M) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
                 {
-                    Console.WriteLine("[VOLUME] Volume button clicked.");
+                    if (Singleton.Instance.AudioManager.IsMuted())
+                    {
+                        Singleton.Instance.AudioManager.UnmuteAll();
+                    }
+                    else
+                    {
+                        Singleton.Instance.AudioManager.MuteAll();
+                    }
+                }
+
+                if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.R) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
+                {
+                    Reset();
+                    Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
+                    _numObjects = _gameObjects.Count;
+                    return;
                 }
 
                 if (Singleton.Instance.CurrentMouse.LeftButton == ButtonState.Pressed &&
-                    Singleton.Instance.PreviousMouse.LeftButton == ButtonState.Released)
+                        Singleton.Instance.PreviousMouse.LeftButton == ButtonState.Released)
                 {
                     int xPos = Singleton.Instance.CurrentMouse.X / Singleton._TILESIZE - 6; // shift to center
                     int yPos = Singleton.Instance.CurrentMouse.Y / Singleton._TILESIZE - 1; // shift to center
@@ -435,6 +356,7 @@ public class MainScene : Game
                     }
                     else if (Singleton.Instance.PossibleClicked.Contains(Singleton.Instance.ClickedPos))
                     {
+                        Singleton.Instance.AudioManager.PlayEffect("perritoguautierno");
                         Point emptyPos = Singleton.Instance.ClickedPos;
                         Point oldPos = Singleton.Instance.SelectedTile;
                         Block selectedBlock = Singleton.Instance.BlockMap[oldPos.Y, oldPos.X];
@@ -485,7 +407,6 @@ public class MainScene : Game
 
                         if (!canMove)
                         {
-                            Console.WriteLine("[BLOCKED] Can't move block to occupied space.");
                             return;
                         }
 
@@ -504,7 +425,7 @@ public class MainScene : Game
                         }
 
                         var newPos = new Vector2(newHeadX * Singleton._TILESIZE, y * Singleton._TILESIZE);
-                        selectedBlock.AnimationMove(newPos, 2f);
+                        selectedBlock.AnimationMove(newPos, _moveAnimate);
 
                         Singleton.Instance.PossibleClicked.Clear();
                         Singleton.Instance.CurrentGameState = Singleton.GameState.GameTurnEnded;
@@ -512,51 +433,47 @@ public class MainScene : Game
                 }
                 break;
             case Singleton.GameState.GameTurnEnded:
-
+                Singleton.Instance.AudioManager._soundInstances["heart-beat"].Stop();
+                MediaPlayer.Resume();
                 Singleton.Instance.Timer = 20.8f; // Reset timer for next turn
-
-                // while (true)
-                // {
-                //     for (int y = Singleton.GAMEHEIGHT - 2; y >= 0; y--)
-                //     {
-                //         for (int x = 0; x < Singleton.GAMEWIDTH; x++)
-                //         {
-                //             TryDropBlockDown(new Point(x, y));
-                //         }
-                //     }
-
-                //     bool cleared = CheckAndClearFullRows();
-                //     if (!cleared) break;
-                // }
 
                 while (true)
                 {
-                    // 1) DROP PHASE: รันการ drop ให้ครบกระดาน
                     for (int y = Singleton.GAMEHEIGHT - 2; y >= 0; y--)
                         for (int x = 0; x < Singleton.GAMEWIDTH; x++)
                             TryDropBlockDown(new Point(x, y));
 
-                    // รอให้การ drop animation จบก่อน
                     if (IsAnyAnimationRunning())
                         return;
 
-                    // 2) CLEAR PHASE: ลบแถวเต็มทีละแถว
                     bool cleared = CheckAndClearFullRows();
                     if (cleared)
                     {
-                        // ถ้ามีการลบแถว ให้รอ clear animation จบก่อน
+                        Singleton.Instance.AudioManager.PlayEffect("success-clear");
                         return;
                     }
 
-                    // ถ้าไม่มีแถวให้ลบอีก → ออกจาก loop
                     break;
                 }
+                if (IsButtonClicked(_drawing.VolumeRect) || Singleton.Instance.CurrentKey.IsKeyDown(Keys.M) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
+                {
+                    if (Singleton.Instance.AudioManager.IsMuted())
+                    {
+                        Singleton.Instance.AudioManager.UnmuteAll();
+                    }
+                    else
+                    {
+                        Singleton.Instance.AudioManager.MuteAll();
+                    }
+                }
+
 
                 ShiftRowsUp(); // Shift rows when turn ends
+
                 if (Singleton.Instance.CurrentGameState == Singleton.GameState.GameOver)
                 {
-                    // Console.WriteLine("[GAME OVER] Game Over due to shift up.");
-                    return;
+                    _numObjects = _gameObjects.Count;
+                    break;
                 }
 
                 Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
@@ -565,25 +482,57 @@ public class MainScene : Game
 
             case Singleton.GameState.GamePaused:
                 // handle unpause
-                if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.Escape) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
+                if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.P) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
                 {
                     Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
                 }
+                if (IsButtonClicked(_drawing.VolumeRect) || Singleton.Instance.CurrentKey.IsKeyDown(Keys.M) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
+                {
+                    if (Singleton.Instance.AudioManager.IsMuted())
+                    {
+                        Singleton.Instance.AudioManager.UnmuteAll();
+                    }
+                    else
+                    {
+                        Singleton.Instance.AudioManager.MuteAll();
+                    }
+                }
                 break;
             case Singleton.GameState.GameOver:
+                Singleton.Instance.Timer = 0f;
                 // handle end game
+                if (_isPlayOver == false)
+                {
+                    Singleton.Instance.AudioManager.PlayEffect("lost-game-over");
+                    _isPlayOver = true;
+                }
+
+                if (IsButtonClicked(_drawing.VolumeRect) || Singleton.Instance.CurrentKey.IsKeyDown(Keys.M) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
+                {
+                    if (Singleton.Instance.AudioManager.IsMuted())
+                    {
+                        Singleton.Instance.AudioManager.UnmuteAll();
+                    }
+                    else
+                    {
+                        Singleton.Instance.AudioManager.MuteAll();
+                    }
+                }
+
                 if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.Space) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
                 {
                     Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
                     Reset();
+                    _numObjects = _gameObjects.Count;
                 }
+                MediaPlayer.Resume();
+                Singleton.Instance.AudioManager._soundInstances["heart-beat"].Stop();
+
                 break;
         }
 
         Singleton.Instance.PreviousMouse = Singleton.Instance.CurrentMouse;
         Singleton.Instance.PreviousKey = Singleton.Instance.CurrentKey;
-
-        Console.WriteLine($"[GAME STATE] {Singleton.Instance.CurrentGameState}");
 
         base.Update(gameTime);
     }
@@ -597,6 +546,10 @@ public class MainScene : Game
             case Singleton.GameState.GameStart:
                 {
                     _drawing._DrawGameStart(_spriteBatch);
+                    if (_showHowToPlay)
+                    {
+                        _drawing._DrawHowToPlay(_spriteBatch);
+                    }
                 }
                 break;
             case Singleton.GameState.GamePlaying:
@@ -644,6 +597,8 @@ public class MainScene : Game
         Singleton.Instance.BlockMap = new Block[Singleton.GAMEHEIGHT, Singleton.GAMEWIDTH];
         Singleton.Instance.Score = 0;
         Singleton.Instance.Timer = 20.8f;
+
+        _isPlayOver = false;
 
         _pendingShiftAfterClear = false;
         CreateRow(3);
@@ -756,7 +711,7 @@ public class MainScene : Game
             }
 
             foreach (var b in blocksToRemove)
-                b.AnimationClear(1f);
+                b.AnimationClear(_checkAndClearAnimate);
 
             y--;
             _numObjects = _gameObjects.Count;
@@ -794,7 +749,6 @@ public class MainScene : Game
         {
             Point pt = new Point(headX + i, y);
             clickedTiles.Add(pt);
-            // Console.WriteLine($"[CLICK] Block at ({pt.X}, {pt.Y})");
         }
 
         return clickedTiles;
@@ -816,7 +770,6 @@ public class MainScene : Game
         if (IsGameOverByShift())
         {
             Singleton.Instance.CurrentGameState = Singleton.GameState.GameOver;
-            Console.WriteLine("[GAME OVER] Cannot shift up: top row is full.");
             return;
         }
 
@@ -834,10 +787,8 @@ public class MainScene : Game
         foreach (var obj in _gameObjects.OfType<Block>())
         {
             var block = obj;
-            // Vector2 target = block.Position - new Vector2(0, Singleton._TILESIZE);
             Vector2 target = new Vector2(block.Position.X, block.Position.Y - Singleton._TILESIZE);
-            // obj.Position = new Vector2(obj.Position.X, obj.Position.Y - Singleton._TILESIZE);
-            block.AnimationMove(target, 2.5f);
+            block.AnimationMove(target, _shiftRowsUpAnimate);
         }
         CreateRow(1);
     }
@@ -849,57 +800,63 @@ public class MainScene : Game
             int row = Singleton.GAMEHEIGHT - rowCount + k;
             int col = 0;
 
+            int guaranteedEmptyCol = Singleton.Instance.Random.Next(Singleton.GAMEWIDTH);
+
             while (col < Singleton.GAMEWIDTH)
             {
-                // Random
+                if (col == guaranteedEmptyCol)
+                {
+                    Singleton.Instance.GameBoard[row, col] = 0;
+                    Singleton.Instance.BlockMap[row, col] = null;
+                    col += 1;
+                    continue;
+                }
+
                 var selected = GetWeightedRandomBlockType();
 
-                //  Calculate Length of Block
-                int length = selected switch
+                if (selected == null)
+                {
+                    Singleton.Instance.GameBoard[row, col] = 0;
+                    Singleton.Instance.BlockMap[row, col] = null;
+                    col += 1;
+                    continue;
+                }
+
+                var blockType = selected.Value;
+                int length = blockType switch
                 {
                     Block.BlockType.One => 1,
                     Block.BlockType.Two => 2,
                     Block.BlockType.Three => 3,
                     Block.BlockType.Four => 4,
                     Block.BlockType.Rock => 1,
-                    _ => 1  // Blank
+                    _ => 1
                 };
 
-                // If out of bounds, new Random
-                if (col + length > Singleton.GAMEWIDTH)
-                    continue;
-
-                // In case of null (Blank)
-                if (selected == null)
+                if (col + length > Singleton.GAMEWIDTH ||
+                    (guaranteedEmptyCol >= col && guaranteedEmptyCol < col + length))
                 {
-                    Singleton.Instance.GameBoard[row, col] = 0;
-                    Singleton.Instance.BlockMap[row, col] = null;
-                    col += 1;
+                    continue; // Try new random
                 }
-                else
+
+                Texture2D tex = blockType == Block.BlockType.Rock
+                    ? Drawing.DogTextures[5]
+                    : Drawing.DogTextures[(int)blockType + 1];
+
+                var block = new Block(tex)
                 {
-                    // Create blocktype
-                    var blockType = selected.Value;
-                    Texture2D tex = blockType == Block.BlockType.Rock
-                        ? Drawing.DogTextures[5]
-                        : Drawing.DogTextures[(int)blockType + 1];
+                    CurrentBlockType = blockType,
+                    Position = new Vector2(col * Singleton._TILESIZE, row * Singleton._TILESIZE)
+                };
+                _gameObjects.Add(block);
 
-                    var block = new Block(tex)
-                    {
-                        CurrentBlockType = blockType,
-                        Position = new Vector2(col * Singleton._TILESIZE, row * Singleton._TILESIZE)
-                    };
-                    _gameObjects.Add(block);
-
-                    // Set the block pieces
-                    for (int i = 0; i < length; i++)
-                    {
-                        block.Pieces[i] = new Vector2(i * Singleton._TILESIZE, 0);
-                        Singleton.Instance.GameBoard[row, col + i] = 1;
-                        Singleton.Instance.BlockMap[row, col + i] = block;
-                    }
-                    col += length;
+                for (int i = 0; i < length; i++)
+                {
+                    block.Pieces[i] = new Vector2(i * Singleton._TILESIZE, 0);
+                    Singleton.Instance.GameBoard[row, col + i] = 1;
+                    Singleton.Instance.BlockMap[row, col + i] = block;
                 }
+                col += length;
             }
         }
     }
@@ -965,7 +922,7 @@ public class MainScene : Game
             Singleton.Instance.BlockMap[dropY, headX + i] = block;
         }
 
-        block.AnimationMove(new Vector2(headX * Singleton._TILESIZE, dropY * Singleton._TILESIZE), 2.5f);
+        block.AnimationMove(new Vector2(headX * Singleton._TILESIZE, dropY * Singleton._TILESIZE), _dropBlockAnimate);
     }
 
     private bool IsAnyAnimationRunning()
@@ -976,11 +933,11 @@ public class MainScene : Game
     {
         // Weight for each block type (percentage change)
         var options = new List<(Block.BlockType? type, int weight)> {
-        (Block.BlockType.One,   30),
-        (Block.BlockType.Two,   20),
-        (Block.BlockType.Three, 15),
-        (Block.BlockType.Four,   10),
-        (Block.BlockType.Rock,   5),
+        (Block.BlockType.One,   25),
+        (Block.BlockType.Two,   22),
+        (Block.BlockType.Three, 16),
+        (Block.BlockType.Four,   11),
+        (Block.BlockType.Rock,   6),
         (null,                 20) // null => Blank
     };
 

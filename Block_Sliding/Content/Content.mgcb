@@ -19,17 +19,59 @@
 /processorParam:Quality=Best
 /build:Audio/Music/happy-sandbox.wav;happy-sandbox.wav
 
+#begin Audio/SFX/freezing-hza.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/freezing-hza.wav;freezing-hza.wav
+
+#begin Audio/SFX/freezing-hza.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/freezing-hza.wav;freezing-hza.wav
+
+#begin Audio/SFX/freezing-hza.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/freezing-hza.wav;freezing-hza.wav
+
 #begin Audio/SFX/heart-beat.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Audio/SFX/heart-beat.mp3;heart-beat.mp3
 
+#begin Audio/SFX/howtoplay_click.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/howtoplay_click.wav;howtoplay_click.wav
+
+#begin Audio/SFX/howtoplay_click.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/howtoplay_click.wav;howtoplay_click.wav
+
+#begin Audio/SFX/lost-game-over.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/lost-game-over.wav;lost-game-over.wav
+
 #begin Audio/SFX/menu-click.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Audio/SFX/menu-click.wav;menu-click.wav
+
+#begin Audio/SFX/perritoguautierno.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/perritoguautierno.wav;perritoguautierno.wav
 
 #begin Audio/SFX/success-clear.wav
 /importer:WavImporter
@@ -152,6 +194,18 @@
 /processorParam:TextureFormat=Color
 /build:UI/button.png;button.png
 
+#begin UI/freeze.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/freeze.png;freeze.png
+
 #begin UI/game_over.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -164,6 +218,18 @@
 /processorParam:TextureFormat=Color
 /build:UI/game_over.png;game_over.png
 
+#begin UI/how_to_play.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/how_to_play.png;how_to_play.png
+
 #begin UI/logo.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -175,6 +241,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:UI/logo.png;logo.png
+
+#begin UI/pause.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/pause.png;pause.png
 
 #begin UI/rock.png
 /importer:TextureImporter

@@ -4,25 +4,43 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/GameFont.spritefont</File>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog1.png</File>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog2.png</File>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog3.png</File>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog4.png</File>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/12.png</File>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/bg_menu.png</File>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/bg.png</File>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/button_up.png</File>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/button.png</File>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/game_over.png</File>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/logo.png</File>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/pause.png</File>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/rock.png</File>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/setting.png</File>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/ui.png</File>
-    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/volume.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/Music/happy-sandbox.wav</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/SFX/freezing-hza.wav</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/SFX/heart-beat.mp3</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/SFX/howtoplay_click.wav</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/SFX/lost-game-over.wav</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/SFX/menu-click.wav</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/SFX/perritoguautierno.wav</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/SFX/success-clear.wav</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/GameFont.spritefont</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog1.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog2.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog3.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog4.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/12.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/bg_menu.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/bg.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/button_up.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/button.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/freeze.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/game_over.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/how_to_play.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/logo.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/pause.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/rock.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/setting.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/ui.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/final/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/volume.png</File>
   </SourceFiles>
   <DestFiles>
+    <File>happy-sandbox.wav</File>
+    <File>freezing-hza.wav</File>
+    <File>heart-beat.mp3</File>
+    <File>howtoplay_click.wav</File>
+    <File>lost-game-over.wav</File>
+    <File>menu-click.wav</File>
+    <File>perritoguautierno.wav</File>
+    <File>success-clear.wav</File>
     <File xsi:nil="true" />
     <File>dog1.png</File>
     <File>dog2.png</File>
@@ -33,7 +51,9 @@
     <File>bg.png</File>
     <File>button_up.png</File>
     <File>button.png</File>
+    <File>freeze.png</File>
     <File>game_over.png</File>
+    <File>how_to_play.png</File>
     <File>logo.png</File>
     <File>pause.png</File>
     <File>rock.png</File>

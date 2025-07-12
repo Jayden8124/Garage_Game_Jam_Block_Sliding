@@ -56,16 +56,27 @@ namespace Dog_Sliding
         public override void Draw(SpriteBatch spriteBatch)
         {
             int length = GetLength();
-            Vector2 origin = new Vector2(0, 0);
+            Rectangle src = Drawing.DogSourceRects[CurrentBlockType];
+
+            int fullWidth = (int)(Singleton._TILESIZE * length * Scale.X);
+            int fullHeight = (int)(Singleton._TILESIZE * Scale.Y);
+
+            // Padding
+            float paddingRatio = 0.05f;
+            int padW = (int)(fullWidth * paddingRatio);
+            int padH = (int)(fullHeight * paddingRatio);
+
             Rectangle dest = new Rectangle(
-                (int)Position.X,
-                (int)Position.Y,
-                (int)(Singleton._TILESIZE * length * Scale.X),
-                (int)(Singleton._TILESIZE * Scale.Y)
+                (int)Position.X + padW,
+                (int)Position.Y + padH,
+                fullWidth - 2 * padW,
+                fullHeight - 2 * padH
             );
-            spriteBatch.Draw(_texture, dest, Color.White);
+
+            spriteBatch.Draw(_texture, dest, src, Color.White);
             base.Draw(spriteBatch);
         }
+
 
         public override void Reset()
         {

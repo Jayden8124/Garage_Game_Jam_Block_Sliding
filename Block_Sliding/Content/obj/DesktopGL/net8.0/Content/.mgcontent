@@ -4,6 +4,14 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/Music/happy-sandbox.wav</File>
+    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/SFX/freezing-hza.wav</File>
+    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/SFX/heart-beat.mp3</File>
+    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/SFX/howtoplay_click.wav</File>
+    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/SFX/lost-game-over.wav</File>
+    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/SFX/menu-click.wav</File>
+    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/SFX/perritoguautierno.wav</File>
+    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/SFX/success-clear.wav</File>
     <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/GameFont.spritefont</File>
     <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog1.png</File>
     <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog2.png</File>
@@ -14,7 +22,9 @@
     <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/bg.png</File>
     <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/button_up.png</File>
     <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/button.png</File>
+    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/freeze.png</File>
     <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/game_over.png</File>
+    <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/how_to_play.png</File>
     <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/logo.png</File>
     <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/pause.png</File>
     <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/rock.png</File>
@@ -23,6 +33,14 @@
     <File>/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/volume.png</File>
   </SourceFiles>
   <DestFiles>
+    <File>happy-sandbox.wav</File>
+    <File>freezing-hza.wav</File>
+    <File>heart-beat.mp3</File>
+    <File>howtoplay_click.wav</File>
+    <File>lost-game-over.wav</File>
+    <File>menu-click.wav</File>
+    <File>perritoguautierno.wav</File>
+    <File>success-clear.wav</File>
     <File xsi:nil="true" />
     <File>dog1.png</File>
     <File>dog2.png</File>
@@ -33,7 +51,9 @@
     <File>bg.png</File>
     <File>button_up.png</File>
     <File>button.png</File>
+    <File>freeze.png</File>
     <File>game_over.png</File>
+    <File>how_to_play.png</File>
     <File>logo.png</File>
     <File>pause.png</File>
     <File>rock.png</File>

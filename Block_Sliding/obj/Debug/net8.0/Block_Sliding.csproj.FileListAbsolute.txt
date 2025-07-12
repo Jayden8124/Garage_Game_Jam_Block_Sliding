@@ -119,4 +119,15 @@ C:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/b
 /Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/obj/Debug/net8.0/Block_Sliding.pdb
 /Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/obj/Debug/net8.0/Block_Sliding.genruntimeconfig.cache
 /Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/obj/Debug/net8.0/ref/Block_Sliding.dll
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/happy-sandbox.ogg
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/happy-sandbox.xnb
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/heart-beat.xnb
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/menu-click.xnb
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/success-clear.xnb
 /Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/pause.xnb
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/freeze.xnb
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/how_to_play.xnb
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/lost-game-over.xnb
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/perritoguautierno.xnb
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/freezing-hza.xnb
+/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/bin/Debug/net8.0/Content/howtoplay_click.xnb
