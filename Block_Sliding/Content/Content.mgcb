@@ -13,6 +13,30 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Audio/Music/happy-sandbox.wav
+/importer:WavImporter
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Audio/Music/happy-sandbox.wav;happy-sandbox.wav
+
+#begin Audio/SFX/heart-beat.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/heart-beat.mp3;heart-beat.mp3
+
+#begin Audio/SFX/menu-click.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/menu-click.wav;menu-click.wav
+
+#begin Audio/SFX/success-clear.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/SFX/success-clear.wav;success-clear.wav
+
 #begin GameFont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
@@ -151,18 +175,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:UI/logo.png;logo.png
-
-#begin UI/pause.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:UI/pause.png;pause.png
 
 #begin UI/rock.png
 /importer:TextureImporter

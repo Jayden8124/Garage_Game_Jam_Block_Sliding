@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Block_Sliding")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2ad7cb1c88ecc1c2894215ac172ec10e79fa5a9b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+93ff5710abbd64a7fe97c489fb34edb798c7ddb5")]
 [assembly: System.Reflection.AssemblyProductAttribute("Block_Sliding")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Block_Sliding")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
