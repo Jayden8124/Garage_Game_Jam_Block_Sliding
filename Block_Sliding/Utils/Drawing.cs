@@ -184,6 +184,11 @@ namespace Dog_Sliding
                 }
             }
 
+            foreach (Point p in Singleton.Instance.PossibleClicked)
+            {
+                _spriteBatch.Draw(Singleton.Instance._Rect, new Vector2(Singleton._TILESIZE * p.X, Singleton._TILESIZE * p.Y), null, Color.Gold * 0.5f, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            }
+
             for (int i = 0; i < _numOjects; i++)
             {
                 _gameObjects[i].Draw(_spriteBatch);
@@ -492,6 +497,7 @@ namespace Dog_Sliding
                 _spriteBatch.Draw(Volume, VolumeRect, new Rectangle(82, 158, 432, 405), Color.White);
             else
                 _spriteBatch.Draw(Volume, VolumeRect, new Rectangle(566, 158, 432, 405), Color.White);
+            _spriteBatch.Draw(freezeSkill, FreezeSkillRect, new Rectangle(142, 192, 745, 632), Color.White);
 
             _spriteBatch.End();
 
@@ -548,7 +554,8 @@ namespace Dog_Sliding
             }
 
             DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, new Rectangle(0, 0, 540, 600), Color.SaddleBrown, 5);
-            DrawLine(_spriteBatch, Singleton.Instance._Rect, new Vector2(0, 540), new Vector2(540, 540), Color.Black, 5);
+            DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, new Rectangle(0, 540, 540, 60), Color.Black, 5);
+
             _spriteBatch.Draw(Pause, new Rectangle(Singleton._TILESIZE * (Singleton.GAMEWIDTH / 2) - 100, Singleton._TILESIZE * (Singleton.GAMEHEIGHT / 2) - 110, 260, 100), new Rectangle(32, 325, 960, 330), Color.White);
 
             _spriteBatch.End();
@@ -614,8 +621,7 @@ namespace Dog_Sliding
             }
 
             DrawRectangleWithOutline(_spriteBatch, Singleton.Instance._Rect, new Rectangle(0, 0, 540, 600), Color.SaddleBrown, 5);
-            _spriteBatch.Draw(GameOver, new Rectangle(Singleton._TILESIZE * (Singleton.GAMEWIDTH / 2) - 150, Singleton._TILESIZE * (Singleton.GAMEHEIGHT / 2) - 100, 360, 120), new Rectangle(25, 240, 1026, 358), Color.White);
-
+            _spriteBatch.Draw(GameOver, new Rectangle(Singleton._TILESIZE * (Singleton.GAMEWIDTH / 2) - 150, Singleton._TILESIZE * (Singleton.GAMEHEIGHT / 2) - 60, 360, 120), new Rectangle(45, 270, 986, 297), Color.White);
             _spriteBatch.End();
         }
 

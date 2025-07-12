@@ -519,7 +519,7 @@ public class MainScene : Game
                     }
                 }
 
-                if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.Space) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
+                if (Singleton.Instance.CurrentKey.IsKeyDown(Keys.R) && !Singleton.Instance.CurrentKey.Equals(Singleton.Instance.PreviousKey))
                 {
                     Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
                     Reset();
