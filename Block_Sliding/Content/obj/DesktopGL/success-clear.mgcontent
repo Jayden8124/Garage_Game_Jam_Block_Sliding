@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>c:/Users/Kanna/OneDrive/Documents/GitHub/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/Audio/SFX/success-clear.wav</SourceFile>
+  <SourceTime>2025-07-11T14:51:10.9901732+07:00</SourceTime>
+  <DestFile>c:/Users/Kanna/OneDrive/Documents/GitHub/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/bin/DesktopGL/success-clear.xnb</DestFile>
+  <DestTime>2025-07-12T19:22:59.6369548+07:00</DestTime>
+  <Importer>WavImporter</Importer>
+  <ImporterTime>2024-08-17T00:05:56+07:00</ImporterTime>
+  <Processor>SoundEffectProcessor</Processor>
+  <ProcessorTime>2024-08-17T00:05:56+07:00</ProcessorTime>
+  <Parameters>
+    <Key>Quality</Key>
+    <Value>Best</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

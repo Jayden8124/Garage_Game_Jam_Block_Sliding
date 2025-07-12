@@ -42,6 +42,8 @@ public class MainScene : Game
         Singleton.Instance.PossibleClicked = new List<Point>();
         Singleton.Instance.Random = new System.Random();
 
+        Singleton.Instance.AudioManager = new Audio();
+
         base.Initialize();
     }
 
@@ -53,6 +55,9 @@ public class MainScene : Game
 
         Reset();
         Singleton.Instance.CurrentGameState = Singleton.GameState.GameStart;
+
+        Singleton.Instance.AudioManager.LoadSounds(Content);
+        Singleton.Instance.AudioManager.PlayMusic("Bgm", 0.5f);
     }
 
     private bool IsAnyAnimationRunning()
