@@ -9,11 +9,15 @@
     <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog2.png</File>
     <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog3.png</File>
     <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/objects/dog4.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/12.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/bg_menu.png</File>
     <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/bg.png</File>
     <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/button_up.png</File>
     <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/button.png</File>
     <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/game_over.png</File>
     <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/logo.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/pause.png</File>
+    <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/rock.png</File>
     <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/setting.png</File>
     <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/ui.png</File>
     <File>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/volume.png</File>
@@ -24,11 +28,15 @@
     <File>dog2.png</File>
     <File>dog3.png</File>
     <File>dog4.png</File>
+    <File>12.png</File>
+    <File>bg_menu.png</File>
     <File>bg.png</File>
     <File>button_up.png</File>
     <File>button.png</File>
     <File>game_over.png</File>
     <File>logo.png</File>
+    <File>pause.png</File>
+    <File>rock.png</File>
     <File>setting.png</File>
     <File>ui.png</File>
     <File>volume.png</File>

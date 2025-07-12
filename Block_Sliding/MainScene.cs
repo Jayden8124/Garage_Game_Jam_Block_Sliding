@@ -19,7 +19,7 @@ public class MainScene : Game
     // Drawing
     private Drawing _drawing;
 
-    private const float ShiftDuration = 1f;
+    private bool _pendingShiftAfterClear;
 
     public MainScene()
     {
@@ -55,11 +55,6 @@ public class MainScene : Game
         Singleton.Instance.CurrentGameState = Singleton.GameState.GameStart;
     }
 
-    private bool IsAnyAnimationRunning()
-    {
-        return _gameObjects.OfType<Block>().Any(b => b.IsMoving || b.IsClearing);
-    }
-
     protected override void Update(GameTime gameTime)
     {
         Singleton.Instance.CurrentKey = Keyboard.GetState();
@@ -68,11 +63,9 @@ public class MainScene : Game
         foreach (var obj in _gameObjects)
             obj.Update(gameTime);
 
-        // ถ้ามีอนิเมชันค้างอยู่ ให้หยุดการประมวลตรรกะเกมหลักไว้ก่อน
-        if (IsAnyAnimationRunning())
+        if (IsAnyAnimationRunning()) // if animation playing will skip
             return;
 
-        // ใส่หลังเช็ค animations ใน Update หลัก
         _gameObjects.RemoveAll(o => o is Block b && !b.IsClearing && b.Scale.X <= 0f);
         _gameObjects.RemoveAll(o => o is Block b && b.Position.Y < 0 && !b.IsMoving);
 
@@ -104,90 +97,226 @@ public class MainScene : Game
                 }
                 break;
 
+            // case Singleton.GameState.GamePlaying:
+            //     if (Singleton.Instance.CurrentGameState == Singleton.GameState.GameOver)
+            //     {
+            //         Console.WriteLine("[GAME OVER] Game Over due to shift up.");
+            //         return;
+            //     }
+
+            //     if (Singleton.Instance.Timer < 0f)
+            //     {
+            //         ShiftRowsUp();
+            //         Singleton.Instance.Timer = 20.8f;
+            //         Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
+            //     }
+
+            //     while (true)
+            //     {
+            //         // Block Drop
+            //         for (int y = Singleton.GAMEHEIGHT - 2; y >= 0; y--)
+            //         {
+            //             for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+            //             {
+            //                 TryDropBlockDown(new Point(x, y));
+            //             }
+            //         }
+
+            //         bool cleared = CheckAndClearFullRows();
+            //         if (cleared)
+            //         {
+            //             ShiftRowsUp(); // Shift rows when turn ends   
+            //         }
+            //         else
+            //         {
+            //             break;
+            //         }
+            //     }
+
+            //     // Find all possible clicked tiles before change state to WaitingForSelection
+            //     Singleton.Instance.PossibleClicked.Clear();
+            //     HashSet<Point> possibleClicked = new HashSet<Point>();
+
+            //     for (int i = 0; i < Singleton.GAMEWIDTH; i++)
+            //     {
+            //         for (int j = 0; j < Singleton.GAMEHEIGHT - 1; j++)
+            //         {
+            //             List<Point> result = FindPossibleClickedTiles(new Point(i, j));
+            //             foreach (Point pt in result)
+            //             {
+            //                 possibleClicked.Add(pt);
+            //             }
+            //         }
+            //     }
+            //     Singleton.Instance.PossibleClicked = possibleClicked.ToList();
+
+            //     // Console.WriteLine("[INIT] BlockMap Initialized");
+            //     // for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
+            //     // {
+            //     //     string line = "";
+            //     //     for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+            //     //     {
+            //     //         if (Singleton.Instance.BlockMap[y, x] != null)
+            //     //             line += Singleton.Instance.BlockMap[y, x].CurrentBlockType + " ";
+            //     //         else
+            //     //             line += "null ";
+            //     //     }
+            //     //     Console.WriteLine($"Y={y}: {line}");
+            //     // }
+
+            //     // Console.WriteLine("[INIT] GameBoard Initialized");
+            //     // for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
+            //     // {
+            //     //     string line = "";
+            //     //     for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+            //     //     {
+            //     //         line += Singleton.Instance.GameBoard[y, x] + " ";
+            //     //     }
+            //     //     Console.WriteLine($"Y={y}: {line}");
+            //     // }
+
+            //     Singleton.Instance.CurrentGameState = Singleton.GameState.GameWaitingForSelection;
+
+            //     break;
+            // case Singleton.GameState.GamePlaying:
+            //     // 1) If we have a pending shift from a clear, wait for all clears to finish…
+            //     if (_pendingShiftAfterClear)
+            //     {
+            //         if (IsAnyAnimationRunning()) return;
+            //         ShiftRowsUp();
+            //         _pendingShiftAfterClear = false;
+            //         return;
+            //     }
+
+            //     // 2) Timer‐driven automatic shift
+            //     if (Singleton.Instance.Timer < 0f)
+            //     {
+            //         ShiftRowsUp();
+            //         Singleton.Instance.Timer = 20.8f;
+            //         return; // let the shift animation play before doing anything else
+            //     }
+
+            //     // 3) Single drop pass
+            //     for (int y = Singleton.GAMEHEIGHT - 2; y >= 0; y--)
+            //         for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+            //             TryDropBlockDown(new Point(x, y));
+            //     if (IsAnyAnimationRunning()) return;
+
+            //     // 4) Single clear pass (if any full rows)
+            //     if (CheckAndClearFullRows())
+            //     {
+            //         // clear animations now running; defer the shift
+            //         _pendingShiftAfterClear = true;
+            //         return;
+            //     }
+
+            //     // 5) No more drop/clear to do—proceed to find possible clicks
+            //     Singleton.Instance.PossibleClicked.Clear();
+            //     var possible = new HashSet<Point>();
+            //     for (int i = 0; i < Singleton.GAMEWIDTH; i++)
+            //         for (int j = 0; j < Singleton.GAMEHEIGHT - 1; j++)
+            //             foreach (var pt in FindPossibleClickedTiles(new Point(i, j)))
+            //                 possible.Add(pt);
+            //     Singleton.Instance.PossibleClicked = possible.ToList();
+            //     Singleton.Instance.CurrentGameState = Singleton.GameState.GameWaitingForSelection;
+            //     break;
+
+            // case Singleton.GameState.GamePlaying:
+            //     // 1) If we have a pending shift from a clear, wait for all clears to finish…
+            //     if (_pendingShiftAfterClear)
+            //     {
+            //         if (IsAnyAnimationRunning()) return;
+            //         ShiftRowsUp();
+            //         _pendingShiftAfterClear = false;
+            //         return;
+            //     }
+
+            //     // 2) Timer‐driven automatic shift
+            //     if (Singleton.Instance.Timer < 0f)
+            //     {
+            //         ShiftRowsUp();
+            //         Singleton.Instance.Timer = 20.8f;
+            //         return; // let the shift animation play before doing anything else
+            //     }
+
+            //     // 3) Single drop pass
+            //     for (int y = Singleton.GAMEHEIGHT - 2; y >= 0; y--)
+            //         for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+            //             TryDropBlockDown(new Point(x, y));
+            //     if (IsAnyAnimationRunning()) return;
+
+            //     // 4) Single clear pass (if any full rows)
+            //     if (CheckAndClearFullRows())
+            //     {
+            //         // clear animations now running; defer the shift
+            //         _pendingShiftAfterClear = true;
+            //         return;
+            //     }
+
+            //     // 5) No more drop/clear to do—proceed to find possible clicks
+            //     Singleton.Instance.PossibleClicked.Clear();
+            //     var possible = new HashSet<Point>();
+            //     for (int i = 0; i < Singleton.GAMEWIDTH; i++)
+            //         for (int j = 0; j < Singleton.GAMEHEIGHT - 1; j++)
+            //             foreach (var pt in FindPossibleClickedTiles(new Point(i, j)))
+            //                 possible.Add(pt);
+            //     Singleton.Instance.PossibleClicked = possible.ToList();
+            //     Singleton.Instance.CurrentGameState = Singleton.GameState.GameWaitingForSelection;
+            //     break;
             case Singleton.GameState.GamePlaying:
-                // Check Game Over
-                if (Singleton.Instance.CurrentGameState == Singleton.GameState.GameOver)
+                // 1) ถ้ามี pending shift จาก clear รอบก่อน ให้รอให้ clear จบแล้วค่อย shift
+
+                while (true)
                 {
-                    Console.WriteLine("[GAME OVER] Game Over due to shift up.");
+                    // 3a) Drop ทุกบล็อกลงล่าง
+                    for (int y = Singleton.GAMEHEIGHT - 2; y >= 0; y--)
+                        for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+                            TryDropBlockDown(new Point(x, y));
+                    // ถ้ายังมีบล็อกกำลังเคลื่อน ให้รอ animation จบก่อน
+                    if (IsAnyAnimationRunning())
+                        return;
+
+                    // 3b) ตรวจสอบและลบแถวเต็มทีละแถว
+                    if (CheckAndClearFullRows())
+                    {
+                        // เจอแถวเต็ม รอบนี้สั่ง clear animation แล้วรอให้มันจบ
+                        _pendingShiftAfterClear = true;
+                        return;
+                    }
+
+                    // ถ้าไม่มีแถวให้ clear อีก → ออกจาก loop
+                    break;
+                }
+
+                if (_pendingShiftAfterClear)
+                {
+                    if (IsAnyAnimationRunning())
+                        return;
+                    ShiftRowsUp();
+                    _pendingShiftAfterClear = false;
                     return;
                 }
 
+                // 2) ถ้า Timer หมด ให้ shift ทันที แล้วรอ animation จบ
                 if (Singleton.Instance.Timer < 0f)
                 {
                     ShiftRowsUp();
                     Singleton.Instance.Timer = 20.8f;
-                    Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
+                    return;
                 }
 
-                while (true)
-                {
-                    // 1) ไล่สั่งบล็อกทุกตัวให้ drop ลงมา
-                    for (int y = Singleton.GAMEHEIGHT - 2; y >= 0; y--)
-                    {
-                        for (int x = 0; x < Singleton.GAMEWIDTH; x++)
-                        {
-                            TryDropBlockDown(new Point(x, y));
-                        }
-                    }
+                // 3) Loop ทำ Drop → Clear จนไม่มีแถวให้ลบอีก
 
-                    // 2) เช็กแล้วลบเต็มแถว ถ้าไม่มีแถวไหนถูกลบเลย ก็ออกจากลูป
-                    bool cleared = CheckAndClearFullRows();
-                    if (cleared)
-                    {
-                        ShiftRowsUp(); // Shift rows when turn ends   
-                    }
-                    else
-                    {
-                        // ถ้าไม่มีแถวถูกลบ ก็ออกจากลูป
-                        break;
-                    }
-                }
 
-                // Find all possible clicked tiles before change state to WaitingForSelection
+                // 4) ไม่มีอะไรจะ drop/clear แล้ว → เปลี่ยนไป WaitingForSelection
                 Singleton.Instance.PossibleClicked.Clear();
-                HashSet<Point> possibleClicked = new HashSet<Point>();
-
+                var possible = new HashSet<Point>();
                 for (int i = 0; i < Singleton.GAMEWIDTH; i++)
-                {
                     for (int j = 0; j < Singleton.GAMEHEIGHT - 1; j++)
-                    {
-                        List<Point> result = FindPossibleClickedTiles(new Point(i, j));
-                        foreach (Point pt in result)
-                        {
-                            possibleClicked.Add(pt);
-                        }
-                    }
-                }
-                Singleton.Instance.PossibleClicked = possibleClicked.ToList();
-
-                Console.WriteLine("[INIT] BlockMap Initialized");
-                for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
-                {
-                    string line = "";
-                    for (int x = 0; x < Singleton.GAMEWIDTH; x++)
-                    {
-                        if (Singleton.Instance.BlockMap[y, x] != null)
-                            line += Singleton.Instance.BlockMap[y, x].CurrentBlockType + " ";
-                        else
-                            line += "null ";
-                    }
-                    Console.WriteLine($"Y={y}: {line}");
-                }
-
-                Console.WriteLine("[INIT] GameBoard Initialized");
-                for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
-                {
-                    string line = "";
-                    for (int x = 0; x < Singleton.GAMEWIDTH; x++)
-                    {
-                        line += Singleton.Instance.GameBoard[y, x] + " ";
-                    }
-                    Console.WriteLine($"Y={y}: {line}");
-                }
-
-                // Change State to WaitingForSelection
+                        foreach (var pt in FindPossibleClickedTiles(new Point(i, j)))
+                            possible.Add(pt);
+                Singleton.Instance.PossibleClicked = possible.ToList();
                 Singleton.Instance.CurrentGameState = Singleton.GameState.GameWaitingForSelection;
-
                 break;
 
             case Singleton.GameState.GameWaitingForSelection:
@@ -206,7 +335,6 @@ public class MainScene : Game
                     Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
                 }
 
-
                 // Check if the mouse is clicked on a button up
                 if (IsButtonClicked(_drawing.ButtonUpRect))
                 {
@@ -221,7 +349,7 @@ public class MainScene : Game
 
                 if (IsButtonClicked(_drawing.SettingRect))
                 {
-                    Reset();
+                    Singleton.Instance.CurrentGameState = Singleton.GameState.GameStart;
                 }
 
                 if (IsButtonClicked(_drawing.VolumeRect))
@@ -243,11 +371,11 @@ public class MainScene : Game
                         Singleton.Instance.SelectedTile = Singleton.Instance.ClickedPos;
                         Singleton.Instance.PossibleClicked.AddRange(FindAvailableSpaces(Singleton.Instance.SelectedTile));
                         Singleton.Instance.PreviousMouse = Singleton.Instance.CurrentMouse;
-                        Singleton.Instance.CurrentGameState = Singleton.GameState.TileSelected;
+                        Singleton.Instance.CurrentGameState = Singleton.GameState.GameTileSelected;
                     }
                 }
                 break;
-            case Singleton.GameState.TileSelected:
+            case Singleton.GameState.GameTileSelected:
                 Singleton.Instance.CurrentMouse = Mouse.GetState();
 
                 // Pause
@@ -255,14 +383,13 @@ public class MainScene : Game
                 {
                     Singleton.Instance.CurrentGameState = Singleton.GameState.GamePaused;
                 }
-                
+
                 if (Singleton.Instance.Timer < 0f)
                 {
                     ShiftRowsUp();
                     Singleton.Instance.Timer = 20.8f;
                     Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
                 }
-
 
                 // Check if the mouse is clicked on a button up
                 if (IsButtonClicked(_drawing.ButtonUpRect))
@@ -279,7 +406,7 @@ public class MainScene : Game
 
                 if (IsButtonClicked(_drawing.SettingRect))
                 {
-                    Reset();
+                    Singleton.Instance.CurrentGameState = Singleton.GameState.GameStart;
                 }
 
                 if (IsButtonClicked(_drawing.VolumeRect))
@@ -312,14 +439,14 @@ public class MainScene : Game
                         int blockLength = selectedBlock.GetLength();
                         int y = oldPos.Y;
 
-                        // หาหัวบล็อกเดิม
+                        // Find the head of the block
                         int headX = oldPos.X;
                         while (headX > 0 && Singleton.Instance.BlockMap[y, headX - 1] == selectedBlock)
                             headX--;
 
                         int tailX = headX + blockLength - 1;
 
-                        // คำนวณตำแหน่งหัวบล็อกใหม่ ตามตำแหน่งช่องว่างที่เลือก
+                        // Calculate and Selected new head position
                         int newHeadX;
                         if (emptyPos.X < headX)
                         {
@@ -331,15 +458,14 @@ public class MainScene : Game
                         }
                         else
                         {
-                            // ช่องว่างอยู่ในบล็อกเดิม ไม่ควรเกิดขึ้น แต่กันไว้
                             newHeadX = headX;
                         }
 
-                        // ตรวจขอบเขต
+                        // Check boundaries
                         if (newHeadX < 0 || newHeadX + blockLength - 1 >= Singleton.GAMEWIDTH)
                             return;
 
-                        // ตรวจสอบพื้นที่ว่างใน GameBoard และ BlockMap
+                        // Find blank space in GameBoard and BlockMap
                         bool canMove = true;
                         for (int i = 0; i < blockLength; i++)
                         {
@@ -358,29 +484,23 @@ public class MainScene : Game
                             return;
                         }
 
-                        // เคลียร์ตำแหน่งบล็อกเก่า
+                        // Clear old position
                         for (int i = 0; i < blockLength; i++)
                         {
                             Singleton.Instance.GameBoard[y, headX + i] = 0;
                             Singleton.Instance.BlockMap[y, headX + i] = null;
                         }
 
-                        // วางบล็อกในตำแหน่งใหม่
+                        // Place the block in the new position
                         for (int i = 0; i < blockLength; i++)
                         {
                             Singleton.Instance.GameBoard[y, newHeadX + i] = 1;
                             Singleton.Instance.BlockMap[y, newHeadX + i] = selectedBlock;
                         }
-                        // อัปเดตตำแหน่งวาดใหม่ของ block (เปลี่ยนตำแหน่งบนจอ)
-                        // selectedBlock.Position = new Vector2(
-                        //     newHeadX * Singleton._TILESIZE,
-                        //     y * Singleton._TILESIZE
-                        // );
 
                         var newPos = new Vector2(newHeadX * Singleton._TILESIZE, y * Singleton._TILESIZE);
-                        selectedBlock.StartMove(newPos, 2f);
+                        selectedBlock.AnimationMove(newPos, 2f);
 
-                        // เคลียร์สถานะ และกลับไปสถานะเล่นเกม
                         Singleton.Instance.PossibleClicked.Clear();
                         Singleton.Instance.CurrentGameState = Singleton.GameState.GameTurnEnded;
                     }
@@ -389,21 +509,42 @@ public class MainScene : Game
             case Singleton.GameState.GameTurnEnded:
 
                 Singleton.Instance.Timer = 20.8f; // Reset timer for next turn
-                // เริ่มลูป drop+clear
+
+                // while (true)
+                // {
+                //     for (int y = Singleton.GAMEHEIGHT - 2; y >= 0; y--)
+                //     {
+                //         for (int x = 0; x < Singleton.GAMEWIDTH; x++)
+                //         {
+                //             TryDropBlockDown(new Point(x, y));
+                //         }
+                //     }
+
+                //     bool cleared = CheckAndClearFullRows();
+                //     if (!cleared) break;
+                // }
+
                 while (true)
                 {
-                    // 1) ไล่สั่งบล็อกทุกตัวให้ drop ลงมา
+                    // 1) DROP PHASE: รันการ drop ให้ครบกระดาน
                     for (int y = Singleton.GAMEHEIGHT - 2; y >= 0; y--)
-                    {
                         for (int x = 0; x < Singleton.GAMEWIDTH; x++)
-                        {
                             TryDropBlockDown(new Point(x, y));
-                        }
+
+                    // รอให้การ drop animation จบก่อน
+                    if (IsAnyAnimationRunning())
+                        return;
+
+                    // 2) CLEAR PHASE: ลบแถวเต็มทีละแถว
+                    bool cleared = CheckAndClearFullRows();
+                    if (cleared)
+                    {
+                        // ถ้ามีการลบแถว ให้รอ clear animation จบก่อน
+                        return;
                     }
 
-                    // 2) เช็กแล้วลบเต็มแถว ถ้าไม่มีแถวไหนถูกลบเลย ก็ออกจากลูป
-                    bool cleared = CheckAndClearFullRows();
-                    if (!cleared) break;
+                    // ถ้าไม่มีแถวให้ลบอีก → ออกจาก loop
+                    break;
                 }
 
                 ShiftRowsUp(); // Shift rows when turn ends
@@ -431,15 +572,13 @@ public class MainScene : Game
                     Singleton.Instance.CurrentGameState = Singleton.GameState.GamePlaying;
                     Reset();
                 }
-                else if (IsButtonClicked(_drawing.BackRect))
-                {
-                    Singleton.Instance.CurrentGameState = Singleton.GameState.GameStart;
-                }
                 break;
         }
 
         Singleton.Instance.PreviousMouse = Singleton.Instance.CurrentMouse;
         Singleton.Instance.PreviousKey = Singleton.Instance.CurrentKey;
+
+        Console.WriteLine($"[GAME STATE] {Singleton.Instance.CurrentGameState}");
 
         base.Update(gameTime);
     }
@@ -465,7 +604,7 @@ public class MainScene : Game
                     _drawing._DrawWaitingForSelect(_spriteBatch, _gameObjects, _numObjects);
                 }
                 break;
-            case Singleton.GameState.TileSelected:
+            case Singleton.GameState.GameTileSelected:
                 {
                     _drawing._DrawTileSelected(_spriteBatch, _gameObjects, _numObjects);
                 }
@@ -501,6 +640,7 @@ public class MainScene : Game
         Singleton.Instance.Score = 0;
         Singleton.Instance.Timer = 20.8f;
 
+        _pendingShiftAfterClear = false;
         CreateRow(3);
     }
 
@@ -520,13 +660,13 @@ public class MainScene : Game
         int blockLength = selectedBlock.GetLength();
         int y = blockPosition.Y;
 
-        // หาหัวจริงของ block
+        // Find the head and tail of the block
         int headX = blockPosition.X;
         while (headX > 0 && Singleton.Instance.BlockMap[y, headX - 1] == selectedBlock)
             headX--;
         int tailX = headX + blockLength - 1;
 
-        // === ตรวจซ้าย ===
+        // Check if the block is at the top row
         for (int offset = 1; headX - offset >= 0; offset++)
         {
             int newHeadX = headX - offset;
@@ -552,7 +692,7 @@ public class MainScene : Game
             else break;
         }
 
-        // === ตรวจขวา ===
+        // Check if the block is at the bottom row
         for (int offset = 1; tailX + offset < Singleton.GAMEWIDTH; offset++)
         {
             int newTailX = tailX + offset;
@@ -582,60 +722,11 @@ public class MainScene : Game
         return availableSpaces;
     }
 
-    // private bool CheckAndClearFullRows()
-    // {
-    //     bool anyCleared = false;
-    //     // เดินเช็กแต่ละแถว
-    //     for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
-    //     {
-    //         bool fullRow = true;
-    //         for (int x = 0; x < Singleton.GAMEWIDTH; x++)
-    //         {
-    //             if (Singleton.Instance.BlockMap[y, x] == null)
-    //             {
-    //                 fullRow = false;
-    //                 break;
-    //             }
-    //         }
-
-    //         if (!fullRow) continue;
-
-    //         anyCleared = true;
-
-    //         // เก็บบล็อกที่ต้องลบ (เพื่อไม่ลบซ้ำเวลา span >1)
-    //         var blocksToRemove = new HashSet<Block>(); // Change
-    //         for (int x = 0; x < Singleton.GAMEWIDTH; x++)
-    //             blocksToRemove.Add(Singleton.Instance.BlockMap[y, x]);
-
-    //         // อัปเดตคะแนนตาม BlockType (One=1, Two=2, Three=3, Four=4)
-    //         foreach (var b in blocksToRemove)
-    //         {
-    //             if (b.CurrentBlockType != Block.BlockType.Rock)
-    //                 Singleton.Instance.Score += (int)b.CurrentBlockType + 1;
-    //             _gameObjects.Remove(b);
-    //         }
-
-    //         // ล้างข้อมูลใน GameBoard/BlockMap ของแถวนั้น
-    //         for (int x = 0; x < Singleton.GAMEWIDTH; x++)
-    //         {
-    //             Singleton.Instance.GameBoard[y, x] = 0;
-    //             Singleton.Instance.BlockMap[y, x] = null;
-    //         }
-
-    //         // ทำให้เช็กที่แถวเดิมอีกครั้งเผื่อแถวบน ๆ ก็เต็มด้วย
-    //         y--;
-
-    //         _numObjects = _gameObjects.Count;
-    //     }
-
-    //     return anyCleared;
-    // }
-
     private bool CheckAndClearFullRows()
     {
         bool anyCleared = false;
 
-        for (int y = 0; y < Singleton.GAMEHEIGHT; y++)
+        for (int y = 0; y < Singleton.GAMEHEIGHT - 1; y++)
         {
             bool fullRow = Enumerable.Range(0, Singleton.GAMEWIDTH)
                             .All(x => Singleton.Instance.BlockMap[y, x] != null);
@@ -646,24 +737,22 @@ public class MainScene : Game
             for (int x = 0; x < Singleton.GAMEWIDTH; x++)
                 blocksToRemove.Add(Singleton.Instance.BlockMap[y, x]);
 
-            // อัปเดตคะแนนเหมือนเดิม
+            // Update Score
             foreach (var b in blocksToRemove)
             {
                 if (b.CurrentBlockType != Block.BlockType.Rock)
                     Singleton.Instance.Score += (int)b.CurrentBlockType + 1;
             }
-            // เคลียร์ GameBoard/BlockMap
+            // Clear GameBoard and BlockMap
             for (int x = 0; x < Singleton.GAMEWIDTH; x++)
             {
                 Singleton.Instance.GameBoard[y, x] = 0;
-                Singleton.Instance.BlockMap[y, x] = null;  // GameBoard => 0 ก็ใส่เพิ่มเติมได้
+                Singleton.Instance.BlockMap[y, x] = null;
             }
 
-            // สั่งอนิเมชันลบ
             foreach (var b in blocksToRemove)
-                b.StartClear(0.3f);
+                b.AnimationClear(1f);
 
-            // ลด y-- เพื่อจะเช็กซ้ำแถวเดิม (map ปรับแล้ว)
             y--;
             _numObjects = _gameObjects.Count;
             return true;
@@ -676,11 +765,11 @@ public class MainScene : Game
     {
         List<Point> clickedTiles = new List<Point>();
 
-        // ไม่ใช่ block
+        // Not a block
         if (Singleton.Instance.GameBoard[mousePosition.Y, mousePosition.X] != 1)
             return clickedTiles;
 
-        // ไม่พบ block หรือเป็น Rock
+        // Not found the block or is a rock
         Block clickedBlock = Singleton.Instance.BlockMap[mousePosition.Y, mousePosition.X];
         if (clickedBlock == null || clickedBlock.CurrentBlockType == Block.BlockType.Rock)
             return clickedTiles;
@@ -688,14 +777,14 @@ public class MainScene : Game
         int y = mousePosition.Y;
         int x = mousePosition.X;
 
-        // หา headX โดยเดินถอยหลังไปจนเจอจุดเริ่มต้นของ block
+        // find headX of block
         while (x > 0 && Singleton.Instance.BlockMap[y, x - 1] == clickedBlock)
             x--;
 
         int headX = x;
         int blockLength = clickedBlock.GetLength();
 
-        // ดึงตำแหน่งทั้งหมดของ block
+        // query all position of block
         for (int i = 0; i < blockLength; i++)
         {
             Point pt = new Point(headX + i, y);
@@ -705,9 +794,8 @@ public class MainScene : Game
 
         return clickedTiles;
     }
-    private bool IsGameOverByShift()
+    private bool IsGameOverByShift() // Use for check gameover
     {
-        // ถ้ามีบล็อกอยู่ในแถวบนสุดก่อนเลื่อน -> เกมโอเวอร์
         for (int x = 0; x < Singleton.GAMEWIDTH; x++)
         {
             if (Singleton.Instance.GameBoard[0, x] == 1)
@@ -718,36 +806,6 @@ public class MainScene : Game
         return false;
     }
 
-    // private void ShiftRowsUp()
-    // {
-    //     if (IsGameOverByShift())
-    //     {
-    //         Singleton.Instance.CurrentGameState = Singleton.GameState.GameOver;
-    //         Console.WriteLine("[GAME OVER] Cannot shift up: top row is full.");
-    //         return;
-    //     }
-
-    //     // 1) เลื่อนข้อมูลใน GameBoard และ BlockMap ขึ้น
-    //     for (int y = 0; y < Singleton.GAMEHEIGHT - 1; y++)
-    //     {
-    //         for (int x = 0; x < Singleton.GAMEWIDTH; x++)
-    //         {
-    //             Singleton.Instance.GameBoard[y, x] = Singleton.Instance.GameBoard[y + 1, x];
-    //             Singleton.Instance.BlockMap[y, x] = Singleton.Instance.BlockMap[y + 1, x];
-    //         }
-    //     }
-
-    //     // 2) เลื่อนตำแหน่ง GameObject ขึ้นทางกายภาพ
-    //     foreach (var obj in _gameObjects)
-    //         obj.Position = new Vector2(obj.Position.X, obj.Position.Y - Singleton._TILESIZE);
-
-    //     // 3) ลบอ็อบเจ็กต์ที่หลุดขอบบน (Y < 0)
-    //     _gameObjects.RemoveAll(o => o.Position.Y < 0);
-
-    //     // 4) เติมแถวใหม่ที่ด้านล่าง
-    //     CreateRow(1);
-    // }
-
     private void ShiftRowsUp()
     {
         if (IsGameOverByShift())
@@ -757,7 +815,7 @@ public class MainScene : Game
             return;
         }
 
-        // 1) เลื่อนข้อมูลใน GameBoard และ BlockMap ขึ้น (ตรรกะเดิม) :contentReference[oaicite:0]{index=0}
+        // Move up data in GameBoard and BlockMap
         for (int y = 0; y < Singleton.GAMEHEIGHT - 1; y++)
         {
             for (int x = 0; x < Singleton.GAMEWIDTH; x++)
@@ -767,92 +825,17 @@ public class MainScene : Game
             }
         }
 
-        // 2) เรียกอนิเมชันเลื่อนขึ้นทีละบล็อก แทนการตั้ง Position ตรงๆ
+        // Call animation for each block to move up
         foreach (var obj in _gameObjects.OfType<Block>())
         {
             var block = obj;
-            // ตำแหน่งเป้าหมาย = ขยับขึ้น TILESIZE หนึ่งช่อง
             // Vector2 target = block.Position - new Vector2(0, Singleton._TILESIZE);
             Vector2 target = new Vector2(block.Position.X, block.Position.Y - Singleton._TILESIZE);
             // obj.Position = new Vector2(obj.Position.X, obj.Position.Y - Singleton._TILESIZE);
-            block.StartMove(target, ShiftDuration);
+            block.AnimationMove(target, 2.5f);
         }
-
-        // 3) เติมแถวใหม่ที่ด้านล่างเหมือนเดิม
         CreateRow(1);
-
-        // 4) **อย่า** ลบอ็อบเจ็กต์ที่ Y<0 ทันทีที่นี่ (จะจัดการหลังอนิเมชันจบ)
     }
-
-
-    // protected void CreateRow(int rowCount)
-    // {
-    //     for (int k = 0; k < rowCount; k++)
-    //     {
-    //         int row = Singleton.GAMEHEIGHT - rowCount + k;
-
-    //         List<int> sequence;
-    //         bool hasEmpty;
-    //         do
-    //         {
-    //             sequence = new List<int>();
-    //             hasEmpty = false;
-    //             int sum = 0;
-
-    //             while (sum < Singleton.GAMEWIDTH)
-    //             {
-    //                 int rand = Singleton.Instance.Random.Next(5); // 0–4
-    //                 if (rand == 0)
-    //                 {
-    //                     sequence.Add(0);
-    //                     sum++;
-    //                     hasEmpty = true;
-    //                 }
-    //                 else if (sum + rand <= Singleton.GAMEWIDTH)
-    //                 {
-    //                     sequence.Add(rand);
-    //                     sum += rand;
-    //                 }
-    //             }
-    //         } while (!hasEmpty);
-
-    //         int col = 0;
-    //         foreach (var seg in sequence)
-    //         {
-    //             if (seg == 0)
-    //             {
-    //                 // ช่องว่าง
-    //                 Singleton.Instance.GameBoard[row, col] = 0;
-    //                 Singleton.Instance.BlockMap[row, col] = null;
-    //                 col++;
-    //             }
-    //             else
-    //             {
-    //                 // สร้างบล็อกความยาว seg
-    //                 var blockType = (Block.BlockType)(seg - 1);
-    //                 var texture = Drawing.DogTextures[seg];
-    //                 var block = new Block(texture)
-    //                 {
-    //                     CurrentBlockType = blockType,
-    //                     Position = new Vector2(col * Singleton._TILESIZE, row * Singleton._TILESIZE)
-    //                 };
-    //                 _gameObjects.Add(block);
-
-    //                 // กำหนดตำแหน่งแต่ละชิ้น
-    //                 for (int i = 0; i < seg; i++)
-    //                     block.Pieces[i] = new Vector2(i * Singleton._TILESIZE, 0);
-
-    //                 // เติมลง GameBoard + BlockMap
-    //                 for (int i = 0; i < seg; i++)
-    //                 {
-    //                     Singleton.Instance.GameBoard[row, col + i] = 1;
-    //                     Singleton.Instance.BlockMap[row, col + i] = block;
-    //                 }
-    //                 col += seg;
-    //             }
-    //         }
-    //     }
-    // }
 
     protected void CreateRow(int rowCount)
     {
@@ -863,10 +846,10 @@ public class MainScene : Game
 
             while (col < Singleton.GAMEWIDTH)
             {
-                // 1) เลือกประเภทบล็อก (หรือ Blank)
+                // Random
                 var selected = GetWeightedRandomBlockType();
 
-                // 2) หาความยาวบล็อก
+                //  Calculate Length of Block
                 int length = selected switch
                 {
                     Block.BlockType.One => 1,
@@ -877,11 +860,11 @@ public class MainScene : Game
                     _ => 1  // Blank
                 };
 
-                // 3) ถ้าเกินขอบ ต้องสุ่มใหม่
+                // If out of bounds, new Random
                 if (col + length > Singleton.GAMEWIDTH)
                     continue;
 
-                // 4) กรณี Blank (null) ให้เว้นว่าง 1 ตำแหน่ง
+                // In case of null (Blank)
                 if (selected == null)
                 {
                     Singleton.Instance.GameBoard[row, col] = 0;
@@ -890,11 +873,10 @@ public class MainScene : Game
                 }
                 else
                 {
-                    // 5) สร้างบล็อกตามประเภท
+                    // Create blocktype
                     var blockType = selected.Value;
-                    // ดึง texture: สำหรับ One–Four ใช้ DogTextures[1–4], สำหรับ Rock อาจใช้ texture เดิมหรือแก้ใหม่
                     Texture2D tex = blockType == Block.BlockType.Rock
-                        ? /* rockTexture */ Drawing.DogTextures[5]
+                        ? Drawing.DogTextures[5]
                         : Drawing.DogTextures[(int)blockType + 1];
 
                     var block = new Block(tex)
@@ -904,14 +886,13 @@ public class MainScene : Game
                     };
                     _gameObjects.Add(block);
 
-                    // 6) กำหนด Pieces และเติมลง GameBoard/BlockMap
+                    // Set the block pieces
                     for (int i = 0; i < length; i++)
                     {
                         block.Pieces[i] = new Vector2(i * Singleton._TILESIZE, 0);
                         Singleton.Instance.GameBoard[row, col + i] = 1;
                         Singleton.Instance.BlockMap[row, col + i] = block;
                     }
-
                     col += length;
                 }
             }
@@ -923,7 +904,7 @@ public class MainScene : Game
         int x = blockPosition.X;
         int y = blockPosition.Y;
 
-        // ป้องกันเลยขอบเขต
+        // Out of bounds check
         if (x < 0 || x >= Singleton.GAMEWIDTH || y < 0 || y >= Singleton.GAMEHEIGHT - 1)
             return;
 
@@ -933,16 +914,16 @@ public class MainScene : Game
 
         int length = block.GetLength();
 
-        // หา head ของ block
+        // Find the head of the block
         int headX = x;
         while (headX > 0 && Singleton.Instance.BlockMap[y, headX - 1] == block)
             headX--;
 
         int tailX = headX + length - 1;
 
-        // หาจำนวนช่องว่างด้านล่าง
+        // Find the lowest position the block can drop to
         int dropY = y;
-        while (dropY + 1 < Singleton.GAMEHEIGHT - 1) // ห้ามเกินแถวรองสุดท้าย
+        while (dropY + 1 < Singleton.GAMEHEIGHT - 1) // the last row is reserved for new blocks
         {
             bool canDrop = true;
             for (int i = 0; i < length; i++)
@@ -961,32 +942,34 @@ public class MainScene : Game
             dropY++;
         }
 
-        // ถ้าขยับไม่ได้ก็ไม่ต้องทำอะไร
+        // Can't move down
         if (dropY == y)
             return;
 
-        // เคลียร์ตำแหน่งเก่า
+        // Clear old position
         for (int i = 0; i < length; i++)
         {
             Singleton.Instance.GameBoard[y, headX + i] = 0;
             Singleton.Instance.BlockMap[y, headX + i] = null;
         }
 
-        // วางตำแหน่งใหม่
+        // Place the block in the new position
         for (int i = 0; i < length; i++)
         {
             Singleton.Instance.GameBoard[dropY, headX + i] = 1;
             Singleton.Instance.BlockMap[dropY, headX + i] = block;
         }
 
-        // อัปเดตตำแหน่งบนจอ
-        // block.Position = new Vector2(headX * Singleton._TILESIZE, dropY * Singleton._TILESIZE);
-        block.StartMove(new Vector2(headX * Singleton._TILESIZE, dropY * Singleton._TILESIZE), 2f);
+        block.AnimationMove(new Vector2(headX * Singleton._TILESIZE, dropY * Singleton._TILESIZE), 2.5f);
     }
 
+    private bool IsAnyAnimationRunning()
+    {
+        return _gameObjects.OfType<Block>().Any(b => b.IsMoving || b.IsClearing);
+    }
     private Block.BlockType? GetWeightedRandomBlockType()
     {
-        // กำหนดสัดส่วน (น้ำหนัก)
+        // Weight for each block type (percentage change)
         var options = new List<(Block.BlockType? type, int weight)> {
         (Block.BlockType.One,   30),
         (Block.BlockType.Two,   20),
@@ -1006,17 +989,6 @@ public class MainScene : Game
             if (r < cumulative)
                 return opt.type;
         }
-        return null; // สำรอง (ไม่ควรถึงที่นี่)
+        return null;
     }
-
 }
-
-
-// Timer Count in Seconds
-
-// _rowTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-// if (_rowTimer >= 5f)
-// {
-//     _rowTimer -= 5f;
-//     ShiftRowsUp();    // เรียกเมธ็อดใหม่
-// }

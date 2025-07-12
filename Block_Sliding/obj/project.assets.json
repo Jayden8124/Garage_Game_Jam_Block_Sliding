@@ -243,11 +243,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/Block_Sliding.csproj",
+      "projectUniqueName": "/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Block_Sliding.csproj",
       "projectName": "Block_Sliding",
-      "projectPath": "/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/Block_Sliding.csproj",
+      "projectPath": "/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/Block_Sliding.csproj",
       "packagesPath": "/Users/jay/.nuget/packages/",
-      "outputPath": "/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Block_Sliding/Block_Sliding/obj/",
+      "outputPath": "/Users/jay/KMITL/Year_4_2568/Semester_1/Garage_Game_Jam/Garage_Game_Jam_Block_Sliding/Block_Sliding/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/jay/.nuget/NuGet/NuGet.Config"

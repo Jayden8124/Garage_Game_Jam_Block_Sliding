@@ -16,26 +16,56 @@ namespace Dog_Sliding
         }
         public BlockType CurrentBlockType;
         public Vector2[] Pieces;
+        private Vector2 _startPosition;
+        private Vector2 _targetPosition;
+        private float _moveElapsed, _moveDuration;
+        private float _clearElapsed, _clearDuration;
+        public bool IsMoving { get; private set; }
+        public bool IsClearing { get; private set; }
 
         public Block(Texture2D texture) : base(texture)
         {
             Pieces = new Vector2[4];
         }
 
-        // public override void Update(GameTime gameTime)
-        // {
-        //     base.Update(gameTime);
-        // }
+        public override void Update(GameTime gameTime)
+        {
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        // public override void Draw(SpriteBatch spriteBatch)
-        // {
-        //     Rectangle dest = new Rectangle((int)Position.X, (int)Position.Y, Singleton._TILESIZE * GetLength(), Singleton._TILESIZE);
+            if (IsMoving)
+            {
+                _moveElapsed += dt;
+                float raw = Math.Min(_moveElapsed / _moveDuration, 1f);
+                float t = MathHelper.SmoothStep(0, 1, raw);
+                Position = Vector2.Lerp(_startPosition, _targetPosition, t);
+                if (raw >= 1f) IsMoving = false;
+            }
+            else if (IsClearing)
+            {
+                _clearElapsed += dt;
+                float t = Math.Min(_clearElapsed / _clearDuration, 1f);
+                Scale = new Vector2(1f - t, 1f - t);
 
-        //     spriteBatch.Draw(_texture, dest, Color.White);
+                if (t >= 1f)
+                    IsClearing = false;
+            }
 
-        //     base.Draw(spriteBatch);
-        // }
+            base.Update(gameTime);
+        }
 
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            int length = GetLength();
+            Vector2 origin = new Vector2(0, 0);
+            Rectangle dest = new Rectangle(
+                (int)Position.X,
+                (int)Position.Y,
+                (int)(Singleton._TILESIZE * length * Scale.X),
+                (int)(Singleton._TILESIZE * Scale.Y)
+            );
+            spriteBatch.Draw(_texture, dest, Color.White);
+            base.Draw(spriteBatch);
+        }
 
         public override void Reset()
         {
@@ -73,19 +103,6 @@ namespace Dog_Sliding
             base.Reset();
         }
 
-
-        // int _tileCount = GetLength();
-
-        // if (_tileCount >= 1 && _tileCount <= 4)
-        // {
-        //     _texture = Drawing.DogTextures[_tileCount];
-        // }
-        // else
-        // {
-        //     // กรณี Rock หรืออื่นๆ ถ้าอยากใช้ Texture อื่น ก็เปลี่ยนตรงนี้ได้
-        //     _texture = Drawing.DogTextures[1];
-        // }
-
         public int GetLength()
         {
             return CurrentBlockType switch
@@ -99,17 +116,7 @@ namespace Dog_Sliding
             };
         }
 
-        // ภายใน class Block : GameObject
-        private Vector2 _startPosition;
-        private Vector2 _targetPosition;
-        private float _moveElapsed, _moveDuration;
-        public bool IsMoving { get; private set; }
-
-        private float _clearElapsed, _clearDuration;
-        public bool IsClearing { get; private set; }
-
-        // เริ่มอนิเมชันเคลื่อนที่
-        public void StartMove(Vector2 newTarget, float duration)
+        public void AnimationMove(Vector2 newTarget, float duration) // Animation Move Block
         {
             _startPosition = Position;
             _targetPosition = newTarget;
@@ -118,56 +125,11 @@ namespace Dog_Sliding
             IsMoving = true;
         }
 
-        // เริ่มอนิเมชันลบ (fade/scale out)
-        public void StartClear(float duration)
+        public void AnimationClear(float duration) // Animation Clear Block
         {
             _clearDuration = duration;
             _clearElapsed = 0f;
             IsClearing = true;
         }
-
-        // อัปเดตอนิเมชัน
-        public override void Update(GameTime gameTime)
-        {
-            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (IsMoving)
-            {
-                _moveElapsed += dt;
-                float t = Math.Min(_moveElapsed / _moveDuration, 1f);
-                Position = Vector2.Lerp(_startPosition, _targetPosition, t);
-
-                if (t >= 1f)
-                    IsMoving = false;
-            }
-            else if (IsClearing)
-            {
-                _clearElapsed += dt;
-                float t = Math.Min(_clearElapsed / _clearDuration, 1f);
-                // ตัวอย่าง: ย่อขนาดให้เล็กลง
-                Scale = new Vector2(1f - t, 1f - t);
-
-                if (t >= 1f)
-                    IsClearing = false;
-            }
-
-            base.Update(gameTime);
-        }
-
-        // วาดโดยใช้ Scale เมื่อกำลังลบ
-        public override void Draw(SpriteBatch spriteBatch)
-        {
-            int length = GetLength();
-            Vector2 origin = new Vector2(0, 0);
-            Rectangle dest = new Rectangle(
-                (int)Position.X,
-                (int)Position.Y,
-                (int)(Singleton._TILESIZE * length * Scale.X),
-                (int)(Singleton._TILESIZE * Scale.Y)
-            );
-            spriteBatch.Draw(_texture, dest, Color.White);
-            base.Draw(spriteBatch);
-        }
-
     }
 }

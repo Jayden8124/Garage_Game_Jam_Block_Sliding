@@ -68,7 +68,7 @@
 /processorParam:TextureFormat=Color
 /build:objects/dog4.png;dog4.png
 
-#begin UI/rock.png
+#begin UI/12.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -78,19 +78,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:UI/rock.png;rock.png
-
-#begin UI/bg.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:UI/bg.png;bg.png
+/build:UI/12.png;12.png
 
 #begin UI/bg_menu.png
 /importer:TextureImporter
@@ -104,7 +92,7 @@
 /processorParam:TextureFormat=Color
 /build:UI/bg_menu.png;bg_menu.png
 
-#begin UI/12.png
+#begin UI/bg.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -114,7 +102,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:UI/12.png;12.png
+/build:UI/bg.png;bg.png
 
 #begin UI/button_up.png
 /importer:TextureImporter
@@ -163,6 +151,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:UI/logo.png;logo.png
+
+#begin UI/pause.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/pause.png;pause.png
+
+#begin UI/rock.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/rock.png;rock.png
 
 #begin UI/setting.png
 /importer:TextureImporter

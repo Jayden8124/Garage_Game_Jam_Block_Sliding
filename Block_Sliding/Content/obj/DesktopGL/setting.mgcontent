@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/UI/setting.png</SourceFile>
-  <SourceTime>2025-07-10T15:52:23.0312365+07:00</SourceTime>
+  <SourceTime>2025-07-10T22:52:46.1142892+07:00</SourceTime>
   <DestFile>c:/Study-Comsci/Y4T1/GameJam/merge/Garage_Game_Jam_Block_Sliding/Block_Sliding/Content/bin/DesktopGL/setting.xnb</DestFile>
-  <DestTime>2025-07-10T15:57:34.2565566+07:00</DestTime>
+  <DestTime>2025-07-11T14:58:30.6753352+07:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2024-08-17T00:05:56+07:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

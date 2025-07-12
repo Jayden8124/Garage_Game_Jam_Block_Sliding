@@ -21,10 +21,10 @@ namespace Dog_Sliding
         public int Score;
         public float Timer;
         public Random Random;
-    
+
         // Game Set Up
         public int[,] GameBoard; // use for mapping 0 (null) , 1 (block)
-        public Block[,] BlockMap;
+        public Block[,] BlockMap; // use for check blocktype object mapping
         public Point SelectedTile;
         public List<Point> PossibleClicked;
         public Point ClickedPos;
@@ -36,7 +36,7 @@ namespace Dog_Sliding
             GameStart,
             GamePlaying,
             GameWaitingForSelection,
-            TileSelected,
+            GameTileSelected,
             GameTurnEnded,
             GamePaused,
             GameOver
@@ -46,7 +46,6 @@ namespace Dog_Sliding
         // Input State
         public KeyboardState PreviousKey, CurrentKey;
         public MouseState PreviousMouse, CurrentMouse;
-
 
         // Singleton instance
         private static Singleton instance;
